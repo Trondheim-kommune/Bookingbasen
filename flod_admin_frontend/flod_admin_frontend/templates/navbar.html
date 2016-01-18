@@ -1,0 +1,52 @@
+<div class="row-fluid">
+    <div class="span9 flod-navbar">
+
+        <ul class="nav nav-pills">
+            {%for page in pages["over"] %}
+            <li class="{% if page.path == request.path %}active{% endif %} {% if page.right %} pull-right{% endif %}" >
+                {% if page.path == request.path %}
+                <span>{{page.title}}</span>
+                {% else %}
+                <a href="{{page.path}}">
+                    {{page.title}}
+                    {% if page.image %}
+                    <i class="{{ page.image }}"></i>
+                    {% endif %}
+                </a>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="span3 flod-navbar">
+        <ul class="nav nav-pills">
+            <li class="pull-right">
+                <a href="/logout">Logg ut</a>
+            </li>
+{#            <li class="pull-right">#}
+{#                <span>{{ user.name }}</span>#}
+{#            </li>#}
+        </ul>
+    </div>
+</div>
+<hr class="navbar-separator">
+<div class="row-fluid">
+    <div class="span12 flod-navbar">
+        <ul class="nav nav-pills">
+            {%for page in pages["under"] %}
+            <li class="{% if page.path == request.path %}active{% endif %} {% if page.right %} pull-right{% endif %}" >
+                {% if page.path == request.path %}
+                <span>{{page.title}}</span>
+                {% else %}
+                <a href="{{page.path}}">
+                    {{page.title}}
+                    {% if page.image %}
+                    <i class="{{ page.image }}"></i>
+                    {% endif %}
+                </a>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

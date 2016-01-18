@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}{{ organisation["name"] }} - Aktører - {{ app_name }}{% endblock %}
+
+{% block content %}
+    {{ super() }}
+
+    <div class="row-fluid">
+        <div class="span10">
+
+            {% if is_member %}
+                <ul class="nav nav-tabs">
+                    <li {% if not "edit" in request.path and not "members" in request.path  and not "internal_notes" in request.path %}class="active"{% endif %}>
+                        <a href="{{ url_for('organisation', organisation_id=organisation_id) }}">Informasjon</a>
+                    </li>
+                    {% if user_mode == 'soker' or user_mode == 'admin' %}
+                        <li {% if "edit" in request.path %}class="active"{% endif %}>
+                            <a href="{{ url_for('edit_organisation', organisation_id=organisation_id) }}">Rediger</a>
+                        </li>
+                    {% endif %}
+                    <li {% if "members" in request.path %}class="active"{% endif %}>
+                        <a href="{{ url_for('add_org_members', organisation_id=organisation_id) }}">Representanter</a>
+                    </li>
+                    {% if user_mode == 'admin' %}
+                        <li {% if "internal_notes" in request.path %}class="active"{% endif %}>
+                            <a href="{{ url_for('internal_notes', organisation_id=organisation_id) }}">Interne notater</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            {% endif %}
+            <div class="span10">
+                {% block org_content %}
+                {% endblock %}
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

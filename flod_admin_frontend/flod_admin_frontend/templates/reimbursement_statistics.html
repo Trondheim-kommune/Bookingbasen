@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block js %}
+    {{ super() }}
+    {% assets "statistics_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.datepicker').datepicker({
+                weekStart: 1,
+                autoclose: true
+            });
+        });
+    </script>
+
+    {% assets "reimbursement_export_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    <script type="text/javascript">
+        (function () {
+            "use strict";
+            Flod.createExportReimbursementView().render();
+        })();
+    </script>
+{% endblock %}
+
+{% block content %}
+    {{ super() }}
+
+    <div class="span8">
+        <h2>Eksporter refusjonsgrunnlag for alle lokaler</h2>
+        <span>En CSV-fil lastes ned og åpnes i Excel</span>
+        <br/><br/>
+    </div>
+
+    <div class="span4">
+        <div class="well">
+            <form class="form-horizontal org_search" id="export">
+                <div class="control-group">
+                    <label class="control-label" for="start_date">Fra dato</label>
+
+                    <div class="controls">
+                        <input type="text" id="start_date" name="start_date" class="datepicker input-small"
+                               data-date-format="dd.mm.yyyy" value="">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="end_date">Til dato</label>
+
+                    <div class="controls">
+                        <input type="text" id="end_date" name="end_date" class="datepicker input-small"
+                               data-date-format="dd.mm.yyyy" value="">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" class="btn">Eksporter</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        Fra/til dato må velges
+    </div>
+
+{% endblock %}

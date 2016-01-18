@@ -1,0 +1,14 @@
+*.*~
+*.DS_Store
+*.pyc
+*.sh
+*~
+.env
+.idea
+.shell-env
+.shell-env-test
+flod_admin_frontend/static/.webassets-cache
+flod_admin_frontend/static/gen
+nosetests.xml
+venv
+flod_admin_frontend/static/js/test/TEST-PhantomJs.PortalTest.xml

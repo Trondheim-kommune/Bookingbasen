@@ -1,0 +1,31 @@
+<script type="text/template" id="facility_geocoding_address_template">
+    <div class="row-fluid">
+        <div class="span3">
+            <input id="facility_address" type="text" class="span12" placeholder="Adresse">
+        </div>
+        <div class="span3">
+            <button type="submit" class="btn">Søk</button>
+        </div>
+    </div>
+    <div id="nohits" class='alert margined hidden'>Ingen treff. Du kan legge til posisjon ved å klikke i kartet!</div>
+</script>
+
+<script type="text/template" id="facility_geocoding_template">
+    <legend>Stedfesting</legend>
+    <% if (!editable) { %>
+        <p>Du er ikke administrator og kan ikke gjøre stedfesting.</p>
+    <% } else { %>
+    <form class="form-inline" id="search_form"></form>
+    <div id="search_error" class='alert alert-error margined hidden'>Det oppstod en feil ved søk i matrikkelen!</div>
+    <div id="map_div">
+        <div id="choose_building" class="alert margined hidden">Velg en av bygningene!</div>
+        <div class="map"></div>
+        <div id="save_position" class="hidden well margined">
+            <button id="select" class="btn btn-primary" type="button">Lagre</button>
+        </div>
+    </div>
+    <% } %>
+</script>
+
+
+{% include "alert.html" %}

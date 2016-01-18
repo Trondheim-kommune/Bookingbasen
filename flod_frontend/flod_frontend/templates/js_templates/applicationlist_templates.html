@@ -1,0 +1,77 @@
+<script type="text/template" id="appplication_list_element_template">
+
+    <tr class="<%=class_name %>">
+        <td rowspan="<%= times.length %>"><%= type %></td>
+        <td rowspan="<%= times.length %>">
+            <%= aktor %>
+            <% if (person) { %><br>
+            (<%= person %>)
+            <% } %>
+        </td>
+        <td rowspan="<%= times.length %>">
+            <%= requested_resource %>
+            <% if (requested_resource_is_deleted === true) { %>
+            <br /><span class="label label-warning">Lokalet er fjernet</span>
+            <% } else if (requested_resource_is_published === false) { %>
+            <br /><span class="label label-warning">Lokalet er ikke tilgjengelig</span>
+            <% } %>
+        </td>
+        <td rowspan="<%= times.length %>">
+            <%= resource %>
+            <% if (resource_is_deleted === true) { %>
+                <br /><span class="label label-warning">Lokalet er fjernet</span>
+            <% } else if (resource_is_published === false) { %>
+                <br /><span class="label label-warning">Lokalet er ikke tilgjengelig</span>
+            <% } %>
+        </td>
+        <td>
+            <%= times[0] %>
+        </td>
+        <td rowspan="<%= times.length %>">
+            <%= status %>
+        </td>
+        <td rowspan="<%= times.length %>">
+            <div class="btn-group btn-group-vertical">
+            <% if(canRelease) { %>
+                <a class="btn btn-small" href="/release_time/repeating_application/<%= application_id %>" title="Frigi enkeltinstanser av den tildelte tiden.">
+                    <i class="icon-adjust"></i>
+                    Frigi tid
+                </a>
+            <% } %>
+
+            <% if(canClone) { %>
+                <a href="/booking/<%= resource_id %>#clone/<%= application_id %>" class="btn btn-small"  title="Lag en ny søknad basert på denne søknaden.">
+                    <i class="icon-time"></i>
+                    Kopier
+                </a>
+            <% } %>
+            <% if(!requested_resource_is_deleted && !resource_is_deleted && isDeletable) { %>
+                <a class="btn btn-small btn-danger" title="Si fra deg/dere denne avtalen. NB: Kan ikke angres!">
+                    <i class="icon-remove"></i> Avbestill
+                </a>
+            <% } %>
+                </div>
+        </td>
+    </tr>
+    <% _.each(_.rest(times, 1), function(time) { %>
+    <tr class="<%=class_name %>">
+        <td style="white-space: nowrap;">
+            <%= time %>
+        </td>
+    </tr>
+    <% }) %>
+</script>
+
+<script type="text/template" id="appplication_list_header_template">
+    <thead>
+    <tr>
+        <th>Type</th>
+        <th>Aktør</th>
+        <th>Lokale (Søkt)</th>
+        <th>Lokale (Fått)</th>
+        <th>Tid</th>
+        <th>Status</th>
+        <th></th>
+    </tr>
+    </thead>
+</script>

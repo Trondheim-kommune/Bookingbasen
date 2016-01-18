@@ -1,0 +1,50 @@
+<div class="well">
+    <legend>Navn og adresse</legend>
+    <div class="row-fluid">
+        <div class="span6">
+            <label>Navn på lokalet <span class="required">*</span><span class="help-inline">Se veileder for hvordan navn skal settes</span></label>
+            <input class="span12" type="text" id="name" name="name" required="required" value="<%- name %>">
+        </div>
+        <div class="span2">
+            <label>Kategori <span class="required">*</span></label>
+            <select required="required" id="facility_type" name="facility_type">
+                <option value="-1">Velg en kategori:</option>
+                <% _.each(facility_types, function(a_facility_type) { %>
+                    <option value="<%= a_facility_type.id%>" <% if(facility_type && a_facility_type.id == facility_type.id) { print('selected'); } %>>
+                        <%= a_facility_type.name %>
+                    </option>
+                <% }) %>
+            </select>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span1">
+            <label for="room">Rom nr</label>
+            <input class="span12" type="text" id="room" name="room" value="<%- room %>">
+        </div>
+        <div class="span1">
+            <label for="floor">Etasje</label>
+            <input class="span12" type="text" id="floor" name="floor" value="<%- floor %>">
+        </div>
+        <div class="span2">
+            <label for="area">Areal (kvm)</label>
+            <input class="span12" type="text" id="area" name="area" value="<%- area %>">
+        </div>
+        <div class="span3">
+            <label for="capacity">Maks antall personer</label>
+            <input class="span12" type="text" id="capacity" name="capacity" value="<%- capacity %>">
+        </div>
+
+    </div>
+
+    <label for="short_description">Kort om lokalet <span class="help-inline">Vises i liste over lokaler</span></label>
+    <textarea id="short_description" class="span10" name="short_description" ><%- short_description %></textarea>
+
+    <label for="description">Beskrivelse av lokalet <span class="help-inline">Vises på siden til lokalet</span></label>
+    <textarea id="description" class="span10" rows="10" name="description"><%- description %></textarea>
+
+    <label>Lenke til mer informasjon</label>
+    <input class="span8" type="text" id="link" name="link" required="required" maxlength="200" value="<%- link %>">
+
+</div>

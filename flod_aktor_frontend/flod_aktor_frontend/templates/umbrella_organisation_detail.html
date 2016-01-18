@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block js %}
+    {{ super() }}
+
+    {% assets "umbrella_organisation_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    <script type="text/javascript">
+
+        (function () {
+            "use strict";
+
+            var umbrella_organisation_data = {{umbrella_organisation | safe}};
+            var umbrella_organisation = new Flod.UmbrellaOrganisation(umbrella_organisation_data);
+
+            var mainView = new Flod.UmbrellaMainView({
+                el: $("#umbrella_organisation_main"),
+                editable: true,
+                model: umbrella_organisation
+            }).render();
+
+        }());
+
+    </script>
+{% endblock %}
+
+{% block content %}
+{{ super() }}
+{% include "alert.html" %}
+    <div id="umbrella_organisation_header">
+        {% include "umbrella_organisation/header.html" %}
+    </div>
+
+    <div id="umbrella_organisation_main" class="tab-content" style="overflow: visible">
+        <div class="tab-pane active" id="home">
+            {% include "umbrella_organisation/umbrella_information.html" %}
+        </div>
+
+        <div class="tab-pane" id="member_organisations">
+            {% include "umbrella_organisation/member_organisations.html" %}
+        </div>
+
+        <div class="tab-pane" id="responsible_persons">
+            {% include "umbrella_organisation/umb_org_members.html" %}
+        </div>
+    </div>
+
+{% endblock %}

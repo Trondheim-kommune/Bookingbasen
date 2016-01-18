@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Registrer aktør - {{ app_name }}{% endblock %}
+
+{% block js %}
+    {{ super() }}
+    {% assets "organisationpage_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    {% assets "registerorganisation_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+
+    <script type="text/javascript">
+        (function () {
+            var brreg_activity_codes = new Flod.BrregActivityCodes({{brreg_activity_codes | safe}});
+            var districts = {{districts | safe }};
+            var recruiting_districts = {{recruiting_districts | safe }};
+            var user_mode = "{{ user_mode }}";
+
+            var orgView = new Flod.RegisterOrgView({
+                "el": $("#register_org_form"),
+                "districts": districts,
+                "recruiting_districts": recruiting_districts,
+                "user_mode": user_mode,
+                "brreg_activity_codes": brreg_activity_codes
+            }).render();
+        }());
+    </script>
+{% endblock %}
+
+{% block content %}
+    {{ super() }}
+    <div class="row-fluid">
+        <div class="span10">
+            <h1 class="small">Registrer aktør</h1>
+
+            <p>
+                Her kan du registrere eller oppdatere informasjon om din frivillige organisasjon eller aktør i Aktørbasen. <br/>
+                NB. Er du sikker på at aktøren ikke er registrert fra før? Sjekk dette her:
+                <a href="/organisations">Finn aktør</a>
+            </p>
+
+            <p>
+                Hvis du ikke har tilgang til å oppdatere informasjon kan det være fordi du ikke er knyttet til organisasjonen. <br/>
+                <a href="https://www.trondheim.kommune.no/aktorbasen/" target="_blank">Mer informasjon</a>
+            </p>
+
+            <div class="row-fluid">
+                <div id="register_org_form">
+                    <div class="span4">
+
+                        <fieldset id="type_add">
+                        </fieldset>
+
+                <span class="form-inline">
+                    <fieldset id="type_field">
+
+                    </fieldset>
+                </span>
+                    </div>
+                    <div class="span8">
+                        <fieldset>
+                            <legend>Aktørinformasjon</legend>
+                            <div class="row-fluid" id="extra_info">
+
+                            </div>
+                        </fieldset>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block templates %}
+    {{ super() }}
+    {% include "js_templates/alert.html" %}
+    {% include "js_templates/register_org_templates.html" %}
+{% endblock %}

@@ -1,0 +1,60 @@
+<div class="row-fluid">
+    <div class="span9 flod-navbar">
+
+        <ul class="nav nav-pills">
+            {%for page in pages["over"] %}
+            <li class="{% if page.path == request.path %}active{% endif %} {% if page.right %} pull-right{% endif %}" >
+                {% if page.path == request.path %}
+                <span>{{page.title}}</span>
+                {% else %}
+                <a href="{{page.path}}" {% if page.external %}target="_blank"{% endif %}>
+                    {{page.title}}
+                    {% if page.image %}
+                    <i class="{{ page.image }}"></i>
+                    {% endif %}
+                </a>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="span3 flod-navbar">
+        <ul class="nav nav-pills">
+            {% if not person and not user %}
+            <li class="pull-right">
+                <a href="/login">Logg inn</a>
+            </li>
+            {% else %}
+            <li class="pull-right">
+                <a href="/logout">Logg ut</a>
+            </li>
+                {% if person %}
+                <li class="pull-right">
+                    <span>{{ person.name }}</span>
+                </li>
+                {% endif %}
+            {% endif %}
+        </ul>
+    </div>
+</div>
+<hr class="navbar-separator">
+<div class="row-fluid">
+    <div class="span12 flod-navbar">
+        <ul class="nav nav-pills">
+            {%for page in pages["under"] %}
+            <li class="{% if page.path == request.path %}active{% endif %} {% if page.right %} pull-right{% endif %}" >
+                {% if page.path == request.path %}
+                <span>{{page.title}}</span>
+                {% else %}
+                <a href="{{page.path}}" {% if page.external %}target="_blank"{% endif %}>
+                    {{page.title}}
+                    {% if page.image %}
+                    <i class="{{ page.image }}"></i>
+                    {% endif %}
+                </a>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

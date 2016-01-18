@@ -1,0 +1,434 @@
+
+<script type="text/template" id="type_reg_choose_template">
+    <legend>Type registrering</legend>
+    <label class="radio">
+        <input type="radio" name="typeRadio" id="with_brreg" value="with_brreg" checked>
+        &nbsp;Registrer aktør med organisasjonsnummer
+    </label>
+    <label class="radio">
+        <input type="radio" name="typeRadio" id="no_brreg" value="no_brreg">
+        &nbsp;Registrer aktør uten organisasjonsnummer
+    </label>
+</script>
+
+<script type="text/template" id="brreg_search_template">
+    <legend>Hent aktør fra Brønnøysundreg.</legend>
+    <label for="org_nr">Organisasjonsnummer eller navn</label>
+    <input type="text" id="org_nr" name="org_nr">
+    <button id="search_org" type="button" class="btn">Hent</button>
+    <div class="org_search_results">
+
+    </div>
+</script>
+
+<script type="text/template" id="org_info_template">
+
+    <% if (fromBrreg) { %>
+        <p>Du kan redigere i de hvite feltene. Dersom det er noe feil i de grå feltene som kommer fra Brønnøysundregistrene må disse endres der!</p>
+    <% } %>
+
+    <% if(showUpdateBtn) { %>
+        <button type="button" class="btn" id="updateBrreg">Oppdater brreg-data</button>
+    <% } %>
+
+    <% if(showDelete) { %>
+    <form>
+        <div class="btn-toolbar">
+            <div class="btn-group">
+                <button id="delete" href="#deleteModal" role="button" data-toggle="modal" type="button" class="btn btn-danger">Fjern aktør</button>
+            </div>
+            <div id="deleteModal" class="modal hide">
+                <div class="modal-header">
+                    <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
+                    <h3>Fjern aktør</h3>
+                </div>
+                <div class="modal-body">
+                    <p>Er du sikker på at du vil fjerne aktøren?</p>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" id="btnYes" class="btn danger">Ja</a>
+                    <a href="#" data-dismiss="modal" aria-hidden="true" class="btn secondary">Nei</a>
+                </div>
+            </div>
+        </div>
+    </form>
+    <% } %>
+
+    <form>
+        <div id="extra_1">
+            <div class="span6">
+
+                <div class="control-group">
+                    <label for="id_name">Aktørens navn <span class="required">*</span></label>
+                    <input type="text" id="id_name" name="name" class="span12" value="<%=name%>" <% if(org_number) { %> readonly <% } %> >
+                </div>
+
+                <% if(brreg_activity_code && brreg_activity_code.length) { %>
+                <div class="control-group">
+                  <label>Kategori(er) <span class="required"></span></label>
+                    <ul>
+                        <% _.each(brreg_activity_code, function (name) { %>
+                        <li><%= name %> </li>
+                        <% }) %>
+                    </ul>
+
+                    <div id="activity_chooser">
+                        <div class="controls" style="margin-bottom: 10px;" >
+                            <label for="id_type_activity">Legg til organisasjonens aktivitet(er)</label>
+                            <select class="span8" style="margin-bottom: 0;" id="id_type_activity" name="type_activity">
+                                <option></option>
+                                <%  _.each(activities, function(activity) { %>
+                                <option value="<%=activity.id %>"><%=activity.name %></option>
+                                <% }); %>
+                            </select>
+
+                            <button type="button" class="btn btn-info pull-right" id="add_activity">Legg til</button>
+                        </div>
+                        <div id="activity_type_display" class="span8">
+                            <ul id="activity_list" class="unstyled"></ul>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+
+                <div class="row-fluid">
+                    <div class="span7">
+                        <div class="control-group">
+                            <label for="id_phone_number">Telefon</label>
+                            <input type="text" id="id_phone_number" name="phone_number" class="span12" value="<%=phone_number%>" <% if(org_number) { %> readonly <% } %>>
+                        </div>
+                    </div>
+
+                    <div class="span5">
+                        <div class="control-group">
+                            <label for="id_telefax_number">Telefaks</label>
+                            <input type="text" id="id_telefax_number" name="telefax_number" class="span12" value="<%=telefax_number%>" <% if(org_number) { %> readonly <% } %>>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label for="id_email_address">E-post</label>
+                    <input type="text" id="id_email_address" name="email_address" class="span12" value="<%=email_address%>" <% if(org_number) { %> readonly <% } %>>
+                </div>
+
+                <div class="control-group">
+                    <label for="id_local_email_address">E-post 2</label>
+                    <input type="text" id="id_local_email_address" name="local_email_address" class="span12" value="<%=local_email_address%>">
+                </div>
+
+                <div class="control-group">
+                    <label for="id_recruitment_area">Rekrutteringsområde</label>
+                    <select id="id_recruitment_area" name="recruitment_area" class="span12">
+                        <option></option>
+                        <%  _.each(recruiting_districts, function(district) { %>
+                        <option value="<%=district.id %>"><%=district.name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+
+                <div class="summary-section">
+                    <p class="summary-section-title">Primært tilholdssted</p>
+
+                    <label class="help-block">Skriv adressen til aktørens klubblokale, øvingslokale, kurslokale eller lignende</label>
+
+                    <div class="control-group">
+                        <label for="id_tilholdssted_address_address_line">Adresse</label>
+                        <input type="text" id="id_tilholdssted_address_address_line" name="tilholdssted_address_address_line" class="span12"  value="<%=tilholdssted_address.address_line%>" >
+                    </div>
+
+                    <div class="control-group">
+                        <label for="id_area">Bydel</label>
+                        <select id="id_area" name="area" class="span12">
+                            <option></option>
+                            <%  _.each(districts, function(district) { %>
+                            <option value="<%=district.id %>"><%=district.name %></option>
+                            <% }); %>
+                        </select>
+                        <a href="https://www.google.com/maps/d/viewer?mid=z-V6o2UJ9Xy4.k14VcQBtIrTw" target="_blank">Kart som viser bydelene</a>
+                    </div>
+
+                    <div class="row-fluid">
+                        <div class="span4">
+                            <div class="control-group">
+                                <label for="id_tilholdssted_address_postal_code">Postnummer</label>
+                                <input type="text" id="id_tilholdssted_address_postal_code" name="tilholdssted_address_postal_code" class="span12" value="<%=tilholdssted_address.postal_code%>" >
+                            </div>
+                        </div>
+
+                        <div class="span8">
+                            <div class="control-group">
+                                <label for="id_tilholdssted_address_postal_city">Poststed</label>
+                                <input type="text" id="id_tilholdssted_address_postal_city" name="tilholdssted_address_postal_city" class="span12"  value="<%=tilholdssted_address.postal_city%>" >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="span6">
+                <div class="summary-section">
+                    <p class="summary-section-title">Postadresse</p>
+                    <div class="control-group">
+                        <label for="id_postal_address_address_line">Adresse</label>
+                        <input type="text" id="id_postal_address_address_line" name="postal_address_address_line" class="span12"  value="<%=postal_address.address_line%>" <% if(org_number) { %> readonly <% } %>>
+                    </div>
+
+                    <div class="row-fluid">
+                        <div class="span4">
+                            <div class="control-group">
+                                <label for="id_postal_address_postal_code">Postnummer</label>
+                                <input type="text" id="id_postal_address_postal_code" name="postal_address_postal_code" class="span12" value="<%=postal_address.postal_code%>" <% if(org_number) { %> readonly <% } %>>
+                            </div>
+                        </div>
+
+                        <div class="span8">
+                            <div class="control-group">
+                                <label for="id_postal_address_postal_city">Poststed</label>
+                                <input type="text" id="id_postal_address_postal_city" name="postal_address_postal_city" class="span12"  value="<%=postal_address.postal_city%>" <% if(org_number) { %> readonly <% } %>>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-section">
+                    <p class="summary-section-title">Forretningsadresse</p>
+                    <div class="control-group">
+                        <label for="id_business_address_address_line">Adresse</label>
+                        <input type="text" id="id_business_address_address_line" name="business_address_address_line" class="span12" value="<%=business_address.address_line%>" <% if(org_number) { %> readonly <% } %>>
+                    </div>
+
+                    <div class="row-fluid">
+                        <div class="span4">
+                            <div class="control-group">
+                                <label for="id_business_address_postal_code">Postnummer</label>
+                                <input type="text" id="id_business_address_postal_code" name="business_address_postal_code" class="span12" value="<%=business_address.postal_code%>" <% if(org_number) { %> readonly <% } %>>
+                            </div>
+                        </div>
+
+                        <div class="span8">
+                            <div class="control-group">
+                                <label for="id_business_address_postal_city">Poststed</label>
+                                <input type="text" id="id_business_address_postal_city" name="business_address_postal_city" class="span12" value="<%=business_address.postal_city%>" <% if(org_number) { %> readonly <% } %>>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row-fluid">
+                    <div class="control-group">
+                        <div class="span10">
+                            <label for="id_num_members">Antall medlemmer</label>
+                        </div>
+
+                        <div class="span2">
+                            <input type="number" id="id_num_members" name="num_members" class="span12" value="<%=num_members%>">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row-fluid">
+                    <div class="control-group">
+                        <div class="span10">
+                            <label for="id_num_members_b20">Antall medlemmer under 20 år</label>
+                        </div>
+
+                        <div class="span2">
+                            <input type="number" id="id_num_members_b20" name="num_members_b20" class="span12" value="<%=num_members_b20%>">
+                        </div>
+                    </div>
+                </div>
+
+                <% if (user_mode == 'admin') { %>
+                <div class="row-fluid">
+                    <div class="control-group">
+                        <div class="span10">
+                            <label for="id_relevant_tkn">Relevant for Trondheim kulturnettverk</label>
+                        </div>
+
+                        <div class="span2">
+                            <input type="checkbox" id="id_relevant_tkn" name="relevant_tkn" class="span12" <% if (relevant_tkn) { %>checked<% } %>>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+
+                <div class="row-fluid">
+                    <div class="control-group">
+                        <div class="span10">
+                            <label for="id_registered_tkn">Medlem i Trondheim kulturnettverk</label>
+                        </div>
+
+                        <div class="span2">
+                            <input type="checkbox" id="id_registered_tkn" name="registered_tkn" class="span12" <% if (registered_tkn) { %>checked<% } %>>
+                        </div>
+                    </div>
+                </div>
+
+                <% if (!isNew && org_number) { %>
+                <div class="row-fluid">
+                    <div class="control-group">
+                        <div class="span10">
+                            <label for="id_is_public">Samtykker til visning av informasjon på nett</label>
+                        </div>
+
+                        <div class="span2">
+                            <input type="checkbox" id="id_is_public" name="is_public" class="span12" <% if (is_public) { %>checked<% } %>>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+
+                <div class="control-group">
+                    <label for="id_description">Beskrivelse</label>
+                    <span class="help-block">Legg inn en kort beskrivelse av hovedaktivitetene til aktøren.</span>
+                    <textarea type="text" id="id_description" name="description" class="span12" cols="10" rows="5"><%=description%></textarea>
+                </div>
+            </div>
+            <div class="span12">
+                <p class="pull-right">
+                    <button id="save_org" type="button" class="btn btn-primary">Lagre</button>
+                </p>
+            </div>
+        </div>
+    </form>
+</script>
+
+<script type="text/template" id="no_brreg_modal_template">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Registrering av aktør uten organisasjonsnummer</h3>
+    </div>
+    <div class="modal-body">
+        <p>OBS! Du er i ferd med å registrere en aktør uten organisasjonsnummer. Vi gjør oppmerksom på fordelene med å registrere seg i Enhetsregisteret/Frivillighetsregisteret (Brønnøysundregistrene) og derved få et organisasjonsnummer:</p>
+        <ul>
+            <li>
+                Det stilles krav om at aktøren har et organisasjonsnummer ved søknad om enkelte typer tilskudd.
+            </li>
+            <li>
+                All informasjon om aktøren er samlet på ett sted.
+            </li>
+            <li>
+                Informasjon om aktøren vil vises på nettsidene til Aktørbasen.
+                (Dvs de vises ikke på nettsidene hvis du registrerer den uten
+                organisasjonsnummer.)
+            </li>
+            <li>
+                Ved registrering i Frivillighetsregisteret kan aktøren ta del i
+                grasrotandelsordningen og kan søke kompensasjon for merverdiavgift.
+            </li>
+        </ul>
+        <p>Du kan sjekke om aktøren allerede er registrert i Brønnøysundregistrene.</p>
+        <p><a href="http://w2.brreg.no/enhet/sok/" target="_blank">Søk i Brønnøysundregistrene</a></p>
+        <p><a href="http://www.brreg.no/elektronisk/index.html" target="_blank">Registrer aktøren i Brønnøysundregistrene</a></p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-inverse">Avbryt</button>
+        <button class="btn btn-primary">Ok - fortsett</button>
+    </div>
+</script>
+
+
+<script type="text/template" id="modal_template">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+      ×
+    </button>
+    <h3>Aktivt samtykke til visning av informasjon på nett</h3>
+  </div>
+  <div class="modal-body">
+    <p>Som representant for <%= name %> gir jeg samtykke til at informasjonen
+      som lagres her vises på Aktørbasens nettsider. Dersom jeg ikke gir
+      samtykke vil informasjonen kun vises for administrator i Trondheim kommune
+      og meg selv – ikke på Aktørbasens nettsider.
+      <p>
+        <a href="http://www.trondheim.kommune.no/aktorbasen/samtykke" target="_blank">
+          Les mer om hvilken informasjon som lagres
+        </a>
+      </p>
+    </p>
+  </div>
+  <div class="modal-footer">
+    <p>
+    <button class="btn btn-primary">
+      Ja, jeg gir samtykke til at informasjon om <%= name %> vises på
+      Aktørbasens nettsider
+    </button>
+    </p>
+    <p>
+    <button class="btn btn-inverse">
+      Nei, jeg gir ikke samtykke til dette
+    </button>
+    </p>
+  </div>
+</script>
+
+<script type="text/template" id="brreg_information_template">
+    <h3>Info fra Brønnøysundregisteret</h3>
+    <dl>
+        <dt>Organisasjonsnavn:</dt>
+        <dd><%= name %></dd>
+    </dl>
+    <dl>
+        <dt>Organisasjonsnummer:</dt>
+        <dd><%= org_number %></dd>
+    </dl>
+    <dl>
+        <dt>Type organisasjon</dt>
+        <dd><%= org_form %></dd>
+    </dl>
+    <dl>
+        <dt>Postadresse</dt>
+        <dd>
+            <% if (postal_address) { %>
+            <%= postal_address.address_line %>, <%= postal_address.postal_code %> <%= postal_address.postal_city %>
+            <% } else { print("-") } %>
+        </dd>
+    </dl>
+    <dl>
+        <dt>Forretningsadresse</dt>
+        <dd>
+            <% if (business_address) { %>
+            <%= business_address.address_line %>, <%= business_address.postal_code %> <%= business_address.postal_city %>
+            <% } else { print("-") } %>
+        </dd>
+    </dl>
+    <dl>
+        <dt>Kontaktperson</dt>
+        <dd><%= contact_person %></dd>
+    </dl>
+    <dl>
+        <dt>Telefon</dt>
+        <dd>
+            <% if (phone_number) { %>
+            <%= phone_number %>
+            <% } else { print("-") } %>
+        </dd>
+    </dl>
+    <dl>
+        <dt>Nettside</dt>
+        <dd>
+            <% if (url) { %>
+            <a href="<%= Flod.fixUrl(url) %>"><%= url %></a>
+            <% } else { print("-") } %>
+        </dd>
+    </dl>
+    <dl>
+        <dt>E-post adresse</dt>
+        <dd>
+            <% if (email_address) { %>
+            <a href="mailto:<%= email_address %>"><%= email_address %></a>
+            <% } else { print("-") } %>
+        </dd>
+    </dl>
+
+    <dl>
+        <dt>Kontonummer</dt>
+        <dd><%= account_number %></dd>
+    </dl>
+
+    <p>Flere opplysninger finnes i Enhetsregisteret/ Frivillighetsregisteret</p>
+</script>
+
+<script type="text/template" id="activity_chooser_element_template">
+    <strong><%= name %></strong> <i class="icon-remove pull-right"></i>
+</script>

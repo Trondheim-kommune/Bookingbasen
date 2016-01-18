@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Book strøtime - {{app_name}}{% endblock %}
+
+{% block css %}
+    {{ super() }}
+
+    {% assets "calendar_css" %}
+    <link rel="stylesheet" type="text/css" media="all" href="{{ ASSET_URL }}" />
+    {% endassets %}
+
+{% endblock %}
+
+{% block js %}
+{{ super() }}
+
+{% assets "calendar_js" %}
+<script type="text/javascript" src="{{ ASSET_URL }}"></script>
+{% endassets %}
+
+{% assets "strotime_js" %}
+<script type="text/javascript" src="{{ ASSET_URL }}"></script>
+{% endassets %}
+
+<script type="text/javascript">
+    (function() {
+        "use strict";
+
+        var bookingView = new Flod.StrotimeBookingView({
+            "el": $("#strotime_container"),
+            "facility_types": {{facility_types|safe}}
+        }).render();
+
+    }());
+</script>
+{% endblock %}
+
+{% block content %}
+{{ super() }}
+<div class="row-fluid">
+    <div class="span10">
+        <h1 class="small">Strøtimer</h1>
+        <p>Her kan du booke strø-timer. Velg type lokale, og se hva du finner ledig de nærmeste 3 ukene.</p>
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span10">
+        <div class="calendar-container" id="strotime_container">
+            <div id="calendar" class="clearfix strotime_calendar">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block templates %}
+    {{ super() }}
+    {% include "js_templates/alert.html" %}
+    {% include "js_templates/modal_template.html" %}
+    {% include "js_templates/strotime.html" %}
+    {% include "js_templates/time-picker.html" %}
+    {% include "js_templates/legend_template.html" %}
+{% endblock %}

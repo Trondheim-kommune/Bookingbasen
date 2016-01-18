@@ -1,0 +1,142 @@
+.large-label {
+    font-size: 16px;
+    padding: 10px;
+}
+
+.distribution_helper {
+    background-color: #F2F2F2;
+    border: 1px solid #C9C9C9;
+}
+
+.distribution_helper h2 {
+    font-size: 16px;
+    margin-top: 0;
+    margin-left: 5px;
+}
+
+.distribution_helper table {
+    width: 100%;
+}
+
+.distribution_helper th {
+    font-weight: normal;
+    color: #9CB1D7;
+    white-space: nowrap;
+}
+
+.distribution_helper tbody td:nth-child(1n+2) {
+    text-align: center;
+}
+
+.distribution_helper tbody > tr:nth-child(odd) {
+    background-color: #E4E4E4;
+}
+
+.margined {
+    margin-top: 20px;
+}
+
+.checkbox_paragraph {
+    padding-left: 20px
+}
+
+#application_list th {
+    background: #F2F2F2;
+}
+
+.slot .selected {
+    background-color: #0088CC !important;
+}
+
+.nav-tabs .icon-chevron-right {
+    float: right;
+    margin-right: -6px;
+    margin-top: 2px;
+    opacity: 0.25;
+}
+
+.white-background {
+    background: #fff;
+}
+
+.map {
+    height: 500px;
+    width: 100%;
+    border: 1px solid #e5e5e5;
+    background: #f8f8ff;
+}
+
+.map img {
+    max-width: none;
+}
+
+.searching {
+    background-image: url("../images/spinner.gif");
+    background-position: 0 10px;
+    background-repeat: no-repeat;
+    padding-top: 10px;
+    padding-left: 20px;
+}
+
+ul.floating-list {
+    position: absolute;
+    z-index: 4000;
+    width: 205px;
+}
+
+.datepicker {
+    z-index: 2000 !important;
+}
+
+.text-error {
+    color: #B94A48 !important;
+}
+
+.org_search .controls {
+    margin-left: 80px !important;
+}
+
+.org_search .control-label {
+    text-align: left !important;
+    width: 60px !important;
+}
+
+table.legend {
+    width: 100%;
+}
+
+.desc {
+    margin-top: 10px;
+}
+
+.largenumber {
+    font-size: 200%;
+    font-weight: bold;
+    color: #d4d4d4;
+
+}
+
+div.normalmarker {
+    cursor: auto !important;
+}
+
+.merknad {
+    margin-top: 1px;
+    width: 220px;
+}
+
+.addmargin {
+    margin-top: 1px;
+}
+
+.no-margin-top {
+    margin-top: 0 !important;
+}
+
+.margin-left-small {
+    margin-left: 10px;
+}
+
+.push--top {
+    margin-top: 24px !important;
+}

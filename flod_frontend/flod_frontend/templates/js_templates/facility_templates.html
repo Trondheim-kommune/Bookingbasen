@@ -1,0 +1,200 @@
+<script type="text/template" id="details_template">
+
+    <div class="row-fluid facilityview">
+        <div class="row-fluid">
+            <% if (hasImages) { %>
+            <div id="images" class="span4 offset1">
+
+            </div>
+            <% } %>
+
+            <div class="span6 <% if (!hasImages) { %>offset1 <% } %>">
+
+                <h2><%=name%></h2>
+                <dl class="dl-horizontal dl-left">
+
+                    <dt>Kategori</dt>
+                    <dd><% if (facility_type && facility_type.id !== 0) { print(facility_type.name) } else { print("-") } %>
+                    <dd>
+
+                    <dt>Bydel</dt>
+                    <dd><% if (district) { print(district.name) } else { print("-") } %></dd>
+
+                    <dt>Adresse</dt>
+                    <dd><% if (address) { print(address) } else { print("-") } %></dd>
+
+                    <dt>Maks antall personer</dt>
+                    <dd><% if (!room) { 
+                        print("-")
+                        } else if (capacity === 0 ) {
+                        print("Ingen begrensning")
+                        } else {
+                        print(capacity + " personer")
+                        } %>
+                    </dd>
+
+                    <dt>Romnummer</dt>
+                    <dd><% if (room) { print(room) } else { print("-") } %>
+                    <dd>
+
+                    <dt>Etasje</dt>
+                    <dd><% if (floor) { print(floor) } else { print("-") } %>
+                    <dd>
+
+                    <dt>Areal</dt>
+                    <dd><% if (area) { print(area) } else { print("-") } %></dd>
+
+                    <dt>Bruksområder</dt>
+                    <dd>
+                        <% if (suitability.length) { %>
+                        <ul>
+                            <% _.each(suitability, function(value) { %>
+                            <li><%= value %></li>
+                            <% }) %>
+                        </ul>
+                        <% } else { print("-") } %>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+        <div class="row-fluid">
+
+            <div class="well well-small span10 offset1">
+                <% if (description) { print(description) } else { print("Beskrivelse mangler.") } %>
+                <% if(!_.isEmpty(link)) { %>
+                <br/> <br/>
+                Lenke til mer informasjon: <a href="<%= link%>" target="_blank"><%- link %></a>
+                <% } %>
+            </div>
+
+            <% if(!_.isEmpty(amenities)) { %>
+            <div class="span2 offset1">
+                <h3>Fasiliteter</h3>
+                <ul>
+                    <% _.each(amenities, function(value) { %>
+                    <li><%= value %></li>
+                    <% }) %>
+                </ul>
+            </div>
+            <% } %>
+
+            <% if(!_.isEmpty(equipment)) { %>
+            <div class="span2 <% if(_.isEmpty(amenities)) { %>offset1 <% } %>">
+                <h3>Fast utstyr</h3>
+                <ul>
+                    <% _.each(equipment, function(value) { %>
+                    <li><%= value %></li>
+                    <% }) %>
+                </ul>
+            </div>
+            <% } %>
+
+            <% if (accessibility.length) { %>
+            <div class="span2 <% if(_.isEmpty(amenities) && _.isEmpty(equipment)) { %>offset1 <% } %>">
+                <h3>Spesielle behov</h3>
+                <ul>
+                    <% _.each(accessibility, function(value) { %>
+                    <li><%= value %></li>
+                    <% }) %>
+                </ul>
+            </div>
+            <% } %>
+
+            <% if (facilitators.length) { %>
+            <div class="span2 <% if(_.isEmpty(amenities) && _.isEmpty(equipment) && _.isEmpty(accessibility)) { %>offset1 <% } %>">
+                <h3>Ressurser</h3>
+                <ul>
+                    <% _.each(facilitators, function(value) { %>
+                    <li><%= value %></li>
+                    <% }) %>
+                </ul>
+            </div>
+            <% } %>
+
+
+            <div class="span10 offset1">
+                <h3>Kontakt</h3>
+                <dl class="dl-horizontal dl-left">
+
+                    <dt>Enhetens telefonnr</dt>
+                    <dd><% if(unit_phone_number) { print(unit_phone_number) } else {print("-") } %></dd>
+
+                    <dt>Enhetens epost</dt>
+                    <dd>
+                        <% if(unit_email_address) { %>
+                        <a href="mailto:<%= unit_email_address%>"><%= unit_email_address %></a>
+                        <% } else { print("-") } %>
+                    </dd>
+                </dl>
+                <dl class="dl-horizontal dl-left">
+                    <% if (typeof(contact_person) !== 'undefined') { %>
+                    <h4>Kontaktperson</h4>
+
+                    <dt>Navn kontaktperson</dt>
+                    <dd><% if(contact_person.name) { print(contact_person.name) } else {print("-") } %></dd>
+
+                    <dt>Telefon kontaktperson</dt>
+                    <dd><% if(contact_person.phone_number) { print(contact_person.phone_number) } else {print("-") } %></dd>
+
+                    <% } %>
+                </dl>
+            </div>
+
+            <div id="documents" class="span10 offset1">
+                <h3>Dokumenter</h3>
+            </div>
+            <div class="span10 offset1 push--top push-half--bottom">
+                <% if (single_booking_allowed) { %>
+                <a href="/booking/<%= id%>#date/" class="btn btn-primary">Søk om engangslån</a>
+                <% } %>
+                <% if (repeating_booking_allowed) { %>
+                <a href="/booking/<%= id%>" class="btn btn-primary">Søk om fast lån</a>
+                <% } %>
+            </div>
+        </div>
+
+    </div>
+</script>
+
+
+<script type="text/template" id="image_template">
+    <div class="span12">
+        <div class="thumbnail">
+            <img width="360" src="<%= fullsize %>">
+        </div>
+    </div>
+</script>
+
+<script type="text/template" id="thumbnail_template">
+    <div class="thumbnail">
+        <img width="70" src="<%= thumbnail %>">
+    </div>
+</script>
+
+<script type="text/template" id="thumbnails_template">
+    <div class="span12">
+        <ul class="thumbnails">
+            <li class="span1 arrow">
+                <i class="icon-chevron-left"></i>
+            </li>
+            <li class="span1 arrow">
+                <i class="icon-chevron-right"></i>
+            </li>
+        </ul>
+    </div>
+</script>
+
+<script type="text/template" id="image_viewer_template">
+    <div class="row-fluid main-image">
+    </div>
+    <div class="row-fluid thumbs">
+    </div>
+</script>
+
+<script type="text/template" id="map_template">
+    <div id="map"></div>
+</script>
+
+<script type="text/template" id="document_template">
+    <a href="<%= url %>"><i class="icon-file"></i> <%= title %></a>
+</script>

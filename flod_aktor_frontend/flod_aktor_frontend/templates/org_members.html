@@ -1,0 +1,149 @@
+{% extends "org_base.html" %}
+
+{% block js %}
+    {{ super() }}
+    {% assets "organisation_members_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    <script type="text/javascript">
+        (function () {
+            var members = new Flod.OrgMembers({{members|safe}});
+            var org_id = {{organisation.get("id")}};
+            var user_mode = "{{ user_mode }}";
+            new Flod.MemberListView({"collection": members, "org_id": org_id, "user_mode": user_mode, "el": $("#member_list")}).render();
+
+        }());
+    </script>
+
+{% endblock %}
+
+{% block org_content %}
+    {{ super() }}
+    <h1 class="small">Representanter for {{ organisation.get("name")}}</h1>
+    <span class="help-block">
+        Følgende personer er assosiert med denne aktøren. Disse personene kan
+        oppdatere informasjon i Aktørbasen, søke om lån av lokaler eller søke om tilskudd
+        på vegne av aktøren. Disse personene kan også legge til andre personer som da vil
+        få samme rettigheter.
+    </span>
+    <div id="member_list" class="well"></div>
+{% endblock %}
+
+{% block templates %}
+    {% include "js_templates/modal_template.html" %}
+    {% include "alert.html" %}
+
+    <script type="text/template" id="add_member_template">
+        <button class="btn btn-primary" type="button" id="add_member">Legg til person</button>
+    </script>
+
+    <script type="text/template" id="add_member_form_template">
+        <fieldset>
+            <legend>Legg til person</legend>
+            <div id="user_alert" class="hide alert alert-danger">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <h4>Feil i skjemadata!</h4>
+                <ul id="errors">
+                </ul>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="first_name">Fornavn</label>
+
+                <div class="controls">
+                    <input type="text" id="first_name">
+                    <span class="help-inline"></span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="last_name">Etternavn</label>
+
+                <div class="controls">
+                    <input type="text" id="last_name">
+                    <span class="help-inline"></span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="nin">Fødselsnummer</label>
+
+                <div class="controls">
+                    <input type="text" id="nin">
+                    <span class="help-inline"></span>
+                </div>
+            </div>
+
+            {% if user_mode == 'admin' %}
+                <div class="control-group">
+                    <label class="control-label" for="phone_number">Telefon</label>
+
+                    <div class="controls">
+                        <input type="text" id="phone_number">
+                        <span class="help-inline"></span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="nin">Epost</label>
+
+                    <div class="controls">
+                        <input type="email" id="email_address">
+                        <span class="help-inline"></span>
+                    </div>
+                </div>
+            {% endif %}
+            <button type="submit" class="btn  btn-primary">Legg til</button>
+        </fieldset>
+    </script>
+
+    <script type="text/template" id="member_view_template">
+
+        <td><%= last_name %></td>
+        <td><%= first_name %></td>
+        <td><%= phone_number %></td>
+        <td><%= email_address %></td>
+        <td><%= role %></td>
+        {% if user_mode == 'soker' or user_mode == 'admin' %}
+            <td>
+                <% if(!from_brreg) { %>
+                <button type="button" class="btn remove-btn <% if(noRemove) { print('hidden') } %>" title="Fjern"><i class="icon-remove-sign"></i></button>
+                <% } %>
+            </td>
+        {% endif %}
+        {% if user_mode == 'admin' %}
+            <td>
+                <button type="button" class="btn edit-btn" title="Rediger"><i class="icon-edit"></i></button>
+            </td>
+        {% endif %}
+
+    </script>
+
+    <script type="text/template" id="edit_member_template">
+        <div class="span5">
+            <div id="validation"></div>
+        </div>
+        <div class="span5">
+            <dl class="dl-horizontal">
+                <dt>Fornavn:</dt>
+                <dd><%= first_name %></dd>
+
+                <dt>Etternavn:</dt>
+                <dd><%= last_name %></dd>
+                <br/>
+
+                <dt>Telefon:</dt>
+                <dd>
+                    <div><input type="text" id="id_phone_number" value="<%= phone_number%>"></div>
+                </dd>
+
+                <dt>E-post:</dt>
+                <dd>
+                    <div><input type="email" id="id_email_address" value="<%= email_address%>"></div>
+                </dd>
+            </dl>
+        </div>
+
+    </script>
+
+
+{% endblock %}

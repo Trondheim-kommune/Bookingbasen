@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Bookingbasen Admin{% endblock %}</title>
+
+    {% block css %}
+        {% assets "bootstrap_css" %}
+            <link rel="stylesheet" type="text/css" media="all" href="{{ ASSET_URL }}"/>
+        {% endassets %}
+    {% endblock %}
+    <link rel="icon" type="image/png"
+          href="{{ url_for('static', filename='images/favicon.png') }}">
+
+</head>
+
+<body>
+<div class="container">
+    {% include "header.html" %}
+
+        {% block main %}
+            {% include "navbar.html" %}
+            {% block content %}
+
+           {% endblock %}
+
+        {% endblock %}
+    </div>
+
+{% block templates %}
+{% endblock %}
+
+{% block js %}
+    {% assets "base_js_libs" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    <script type="text/javascript">
+        // Disallow AJAX caching to make things work in IE
+        $.ajaxSetup({ cache: false });
+    </script>
+
+{% endblock %}
+
+</body>
+</html>

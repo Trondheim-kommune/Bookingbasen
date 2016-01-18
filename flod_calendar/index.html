@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" media="all" href="css/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="css/ui-lightness/jquery-ui-1.10.3.custom.min.css" />
+
+    <link rel="stylesheet" type="text/css" media="all" href="css/flod_calendar.css" />
+
+    <style type="text/css">
+        #content {
+            margin-top: 100px;
+            margin-bottom: 100px;
+        }
+
+
+    </style>
+</head>
+<body>
+
+<div id="content" class="container">
+
+    <div id="clickable_no_edit">
+        <h1>Clickable, no edit</h1>
+    </div>
+
+    <div id="clickable_no_slots">
+        <h1>Clickable, no edit</h1>
+    </div>
+
+
+    <div id="editable">
+        <h1>Editable</h1>
+    </div>
+    <div id="editable_data">
+        <button id="get_slot_data">Show slot data</button>
+        <div id="slot_data"></div>
+    </div>
+
+    <div id="partial_editable">
+        <h1>Editable with some reserved</h1>
+    </div>
+
+    <div id="inverted">
+        <h1>Inverted</h1>
+    </div>
+
+    <div id="custom_color">
+        <h1>Custom colors</h1>
+    </div>
+
+    <div id="week_chooser">
+        <h1>Week Chooser</h1>
+    </div>
+
+    <div id="weeks_chooser">
+        <h1>Weeks Chooser</h1>
+    </div>
+
+    <div id="background_colors">
+        <h1>Background colors</h1>
+    </div>
+
+</div>
+
+
+<script src="js/lib/jquery-1.9.1.min.js"></script>
+<script src="js/lib/underscore-min.js"></script>
+<script src="js/lib/backbone-min.js"></script>
+<script src="js/lib/moment.min.js"></script>
+<script src="js/lib/moment-range.js"></script>
+<script src="js/lib/bootstrap.min.js"></script>
+
+<script src="js/dist/FlodCalendar.js"></script>
+
+<script type="text/javascript">
+    (function () {
+        "use strict";
+
+
+        var rows = [
+            {
+                "date": moment("2013-09-05") ,"displayName": "Row with very long name, annoyingly long..", 
+                "slots":  [
+                {
+                    "start_time": "2013-09-05T08:00:00",
+                    "end_time": "2013-09-05T08:30:00",
+                    "organisation": {"uri": "/oranisations/1", "name": "short time but very long name"}
+                },
+                {
+                    "start_time": "2013-09-05T15:00:00",
+                    "end_time": "2013-09-05T16:00:00",
+                    "organisation": {"uri": "/oranisations/1", "name": "Org 1"}
+                },
+                {
+                    "status": "Denied",
+                    "start_time": "2013-09-05T18:00:00",
+                    "end_time": "2013-09-05T22:30:00",
+                    "organisation": {"uri": "/oranisations/1", "name": "Org 1"}
+                }]
+            },
+            {"date": moment("2013-09-06") ,"displayName": "Row2", "slots": [
+                {
+                    "status": "Granted",
+                    "start_time": "2013-09-06T10:00:00",
+                    "end_time": "2013-09-06T13:30:00",
+                    "organisation": {"uri": "/oranisations/1", "name": "Org 1"}
+                },
+                {
+                    "start_time": "2013-09-06T14:00:00",
+                    "end_time": "2013-09-06T18:30:00",
+                    "organisation": {"uri": "/oranisations/1", "name": "Org 1"}
+                }
+            ]},
+            {"date": moment("2013-09-07") ,"displayName": "Row3", "slots": [
+                {
+                    "start_time": "2013-09-07T08:00:00",
+                    "end_time": "2013-09-07T17:30:00",
+                    "organisation": {"uri": "/oranisations/1", "name": "Org 1"}
+                },
+                {
+                    "start_time": "2013-09-07T18:00:00",
+                    "end_time": "2013-09-07T22:30:00",
+                    "organisation": {"uri": "/oranisations/1", "name": "Org 1"}
+                }
+            ]}
+        ];
+
+        var calendar = new Flod.CalendarModel({
+            "rows": rows,
+            "title": "title",
+            "subtitle": "subtitle"
+        });
+
+        var calendarView = new Flod.CalendarView({"model": calendar}).render();
+        $("#clickable_no_edit").append(calendarView.$el);
+        calendarView.on("emptySlotClick", function (e) {
+            var data = {
+                "start_time": e.start_time,
+                "end_time": e.end_time,
+                "organisation": {"uri": "/organisations/1", "name": "test"}
+            };
+            var ts = new Flod.TimeSlot(data);
+            e.row.addSlot(ts);
+        });
+
+    }());
+
+    (function () {
+        "use strict";
+
+
+        var rows = [
+            {"date": moment("2013-09-05") ,"displayName": "Row with very long name, annoyingly long..", "slots":  []}
+        ];
+
+        var calendar = new Flod.CalendarModel({
+            "rows": rows,
+            "title": "title",
+            "subtitle": "subtitle"
+        });
+
+        var calendarView = new Flod.CalendarView({"model": calendar}).render();
+        $("#clickable_no_slots").append(calendarView.$el);
+        calendarView.on("emptySlotClick", function (e) {
+            var data = {
+                "start_time": e.start_time,
+                "end_time": e.end_time,
+                "organisation": {"uri": "/organisations/1", "name": "11 test med langt navn ffs!"}
+            };
+            var ts = new Flod.TimeSlot(data);
+            e.row.addSlot(ts);
+        });
+
+    }());
+
+    (function () {
+        "use strict";
+
+        var rows = [{
+            "date": moment("2013-09-05"),
+            "displayName": "Row1",
+            "slots": [{
+                "start_time": "2013-09-05T15:00:00",
+                "end_time": "2013-09-05T17:00:00",
+                "organisation": {"uri": "/oranisations/1", "name": ""}
+            },
+                {
+                    "start_time": "2013-09-05T18:00:00",
+                    "end_time": "2013-09-05T21:00:00",
+                    "organisation": {"uri": "/oranisations/1", "name": ""}
+                }]
+        },{
+            "date": moment("2013-09-05"),
+            "displayName": "Row2",
+            "slots": []
+        }];
+
+        var calendar = new Flod.CalendarModel({
+            "rows": rows,
+            "title": "title",
+            "subtitle": "subtitle",
+            "editable": true
+        });
+
+        var calendarView = new Flod.CalendarView({"model": calendar}).render();
+        $("#editable").append(calendarView.$el);
+
+
+        $("#get_slot_data").click(function (){
+            $("#slot_data").html("");
+            _.each(calendar.getSlots(), function (slot) {
+                $("#slot_data").append(slot.collection.getDisplayName() + " " + slot.get("start_time").format("HH:mm") + " - " + slot.get("end_time").format("HH:mm") + "<br/>");
+            })
+        });
+    }());
+
+
+    (function () {
+        "use strict";
+
+        var rows = [{
+            "date": moment("2013-09-05"),
+            "displayName": "Row1",
+            "slots": [{
+                "start_time": "2013-09-05T08:00:00",
+                "end_time": "2013-09-05T11:00:00",
+                "status": "Reserved",
+                "editable": false
+            },
+                {
+                    "start_time": "2013-09-05T18:00:00",
+                    "end_time": "2013-09-05T21:00:00",
+                    "organisation": {"uri": "/oranisations/1", "name": ""}
+                }]
+        },{
+            "date": moment("2013-09-05"),
+            "displayName": "Row2",
+            "slots": [{
+                "start_time": "2013-09-05T08:00:00",
+                "end_time": "2013-09-05T11:30:00",
+                "status": "Reserved",
+                "editable": false
+            }]
+        }];
+
+        var calendar = new Flod.CalendarModel({
+            "rows": rows,
+            "title": "title",
+            "subtitle": "subtitle",
+            "editable": true
+        });
+
+        var calendarView = new Flod.CalendarView({"model": calendar}).render();
+        $("#partial_editable").append(calendarView.$el);
+
+
+    }());
+
+    (function () {
+        "use strict";
+
+        var rows = [{
+            "date": moment("2013-09-05"),
+            "displayName": "Row1",
+            "slots": [
+                {
+                    "start_time": "2013-09-05T08:00:00",
+                    "end_time": "2013-09-05T11:00:00",
+                    "status": "other",
+                    "editable": false,
+                    "color": "#ff0000"
+                },
+                {
+                    "start_time": "2013-09-05T18:00:00",
+                    "end_time": "2013-09-05T21:00:00",
+                    "organisation": {"uri": "/oranisations/1", "name": ""},
+                    "status": "other",
+                    "editable": false,
+                    "color": "#00ff00"
+                }
+            ]
+        },{
+            "date": moment("2013-09-05"),
+            "displayName": "Row2",
+            "slots": [{
+                "start_time": "2013-09-05T08:00:00",
+                "end_time": "2013-09-05T11:30:00",
+                "status": "other",
+                "editable": false,
+                "color": "#0000ff"
+            }]
+        }];
+
+        var calendar = new Flod.CalendarModel({
+            "rows": rows,
+            "title": "title",
+            "subtitle": "other",
+            "editable": false
+        });
+
+        var calendarView = new Flod.CalendarView({"model": calendar}).render();
+        $("#custom_color").append(calendarView.$el);
+
+
+    }());
+
+    (function () {
+        "use strict";
+
+        var mapSlotsByWeekday = function (res, slot) {
+            var weekday = slot.get("week_day");
+            if (!res[weekday]) {
+                res[weekday] = [];
+            }
+            res[weekday].push(slot);
+            return res;
+        };
+
+        var calendarView = new Flod.IdealizedWeeklyCalendarView().render();
+
+        calendarView.add = function (slots) {
+
+            var mappedSlots = _.reduce(slots, mapSlotsByWeekday, {});
+            var inverted = Flod.calendar.invertSlots(mappedSlots);
+
+            _.each(inverted, function (slots, weekday) {
+                var row = this.calendar.row(weekday - 1);
+                if (row) {
+                    row.addSlots(slots);
+                }
+            }, this);
+        };
+
+        var slots = [
+            new Flod.TimeSlot({
+                "start_time": "08:00:00",
+                "end_time": "10:00:00",
+                "week_day": 1
+            })
+        ];
+        calendarView.add(slots);
+
+        $("#inverted").append(calendarView.$el);
+
+    }());
+
+    (function () {
+        "use strict";
+
+        var range = {
+            "start": moment("2013-06-10T23.59:00:00"),
+            "end": moment("2013-06-13T00.00:00:00")
+        };
+
+        var week = new Flod.Week({
+            "year": 2013,
+            "week": 24,
+            "range": range
+        });
+
+        var weekView = new Flod.WeekView({"model": week, "selected": moment("12.06.2013", "DD.MM.YYYY")}).render();
+        $("#week_chooser").append(weekView.$el);
+    }());
+
+    (function () {
+        "use strict";
+
+        var weeks = new Flod.Weeks({
+            "week": new Flod.Week({
+                "year": 2013,
+                "week": 24
+            })
+        });
+
+        var weeksView = new Flod.WeeksView({"model": weeks}).render();
+        $("#weeks_chooser").append(weeksView.$el);
+    }());
+
+
+    (function () {
+        "use strict";
+
+
+        var rows = [
+            {
+                "date": moment("2013-09-05") ,"displayName": "Row with very long name, annoyingly long..",                 
+                "colors": [
+                {
+                    "start_time": "2013-09-05T08:00:00",
+                    "end_time": "2013-09-05T10:30:00",
+                    "background_color": "green"
+                },
+                {
+                    "start_time": "2013-09-05T15:00:00",
+                    "end_time": "2013-09-05T16:30:00",
+                    "background_color": "#B20000"
+                }
+                ]
+            }
+        ];
+
+        var calendar = new Flod.CalendarModel({
+            "rows": rows,
+            "title": "title",
+            "subtitle": "subtitle"
+        });
+
+        var calendarView = new Flod.CalendarView({"model": calendar}).render();
+        $("#background_colors").append(calendarView.$el);
+        calendarView.on("emptySlotClick", function (e) {
+            var data = {
+                "start_time": e.start_time,
+                "end_time": e.end_time,
+                "organisation": {"uri": "/organisations/1", "name": "test"}
+            };
+            var ts = new Flod.TimeSlot(data);
+            e.row.addSlot(ts);
+        });
+
+        calendar.getRowForDate(moment("2013-09-05")).addColors([{
+            "start_time": "2013-09-05T11:00:00",
+            "end_time": "2013-09-05T12:00:00",
+            "background_color": "#B20000"
+        }])
+    }());
+</script>
+
+</body>
+</html>

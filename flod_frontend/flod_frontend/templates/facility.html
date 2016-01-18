@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}{{facility.name}} - Lokaler - {{app_name}}{% endblock %}
+
+{% block css %}
+{{ super() }}
+{% assets "leaflet_css" %}
+<link rel="stylesheet" type="text/css" media="all" href="{{ ASSET_URL }}" />
+{% endassets %}
+
+{% assets "calendar_css" %}
+<link rel="stylesheet" type="text/css" media="all" href="{{ ASSET_URL }}" />
+{% endassets %}
+
+{% endblock %}
+
+{% block js %}
+{{ super() }}
+
+        {% assets "calendar_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+        {% endassets %}
+
+        {% assets "leaflet_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+        {% endassets %}
+        {% assets "facilitypage_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+        {% endassets %}
+
+
+
+        <script type="text/javascript">
+
+
+            (function() {
+                var facility = {{facility_json|safe}};
+
+                new Flod.FacilityView({
+                    "model": new SpatialBB.MarkerModel(facility, {"requirePosition": false}),
+                    "el": $("#facility_view"),
+                    "type_mappings": {{type_mappings|safe}}
+                });
+            }());
+
+            Backbone.history.start();
+        </script>
+
+{% endblock %}
+
+{% block content %}
+{{ super() }}
+        <h1>{{facility.name}}</h1>
+<div class="tabbable" id="facility_view">
+    <ul class="nav nav-tabs">
+        <li><a href="#" id="details_tab">Detaljer</a></li>
+        <li><a href="#calendar" id="calendar_tab">Kalender</a></li>
+        <li><a href="#map" id="map_tab">Kart</a></li>
+    </ul>
+    <div class="tab-content">
+    </div>
+</div>
+{% endblock %}
+
+{% block templates %}
+    {{ super() }}
+    {% include "js_templates/facility_templates.html" %}
+    {% include "js_templates/legend_template.html" %}
+{% endblock %}

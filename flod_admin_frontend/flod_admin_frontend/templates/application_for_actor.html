@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block css %}
+    {{ super() }}
+    {% assets "calendar_css" %}
+        <link rel="stylesheet" type="text/css" media="all" href="{{ ASSET_URL }}"/>
+    {% endassets %}
+{% endblock %}
+
+{% block js %}
+    {{ super() }}
+
+    {% assets "calendar_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    {% assets "booking_for_actor_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    <script type="text/javascript">
+        (function () {
+            "use strict";
+
+            var view = new Flod.BookingForActorView({
+                el: $('#booking'),
+                facilities: {{facilities | safe}},
+                persons: {{persons | safe}},
+                organisations: {{organisations | safe}},
+                "facilitation_type_mappings": {{ type_mappings | safe }},
+                "facilitation_group_mappings": {
+                    'amenities': 'Fasiliteter',
+                    'equipment': 'Utstyr',
+                    'accessibility': 'Tilrettelegging',
+                    'suitability': 'Bruksområder',
+                    'facilitators': 'Ressurser'
+                }
+            }).render();
+
+        }());
+    </script>
+
+{% endblock %}
+
+
+{% block content %}
+    {{ super() }}
+
+    <div class="row-fluid">
+        <div class="span12">
+            <h2>Opprett søknad for aktør</h2>
+
+            <p>Her kan du opprette en søknad for engangs- eller fast lån på vegne av en aktør. Etter at søknaden er laget vil den bli sendt til godkjenning på lik linje med vanlige
+                søknader.</p>
+        </div>
+    </div>
+    <div id="booking">
+
+    </div>
+    <div class="row-fluid">
+        <div class="legend span4"></div>
+    </div>
+{% endblock %}
+
+
+{% block templates %}
+    {{ super() }}
+
+    <script type="text/template" id="booking_type_template">
+        <div class="row-fluid">
+            <div class="span4">
+                <strong>Type søknad</strong>
+            </div>
+            <div id="booking-type" class="span8">
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span4">
+            </div>
+            <div id="single-booking-application-type" class="span8">
+            </div>
+        </div>
+    </script>
+
+    <script type="text/template" id="single_booking_type_template">
+        <form class="form-inline">
+            <div class="control-group">
+                <div class="control-group">
+                    <div class="controls">
+                        <label class="checkbox">
+                            <input type="checkbox"> Legge inn arrangement over allerede tildelt tid
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </script>
+
+    <script type="text/template" id="resource_select_template">
+        <form class="form-inline">
+            <label><strong>Lokale</strong></label>
+            <select>
+                <option>--</option>
+            </select>
+        </form>
+    </script>
+
+    <script type="text/template" id="actor_select_template">
+        <div class="row-fluid">
+            <div class="span2">
+                <strong>Aktør</strong>
+            </div>
+            <div class="span8">
+            </div>
+        </div>
+    </script>
+
+    <script type="text/template" id="toggle_btn_template">
+        <button value="<%= type %>" class="btn<% if(selected) { print(" active") } %>" <% if(!active) { print("disabled") } %>><%=text %></button>
+    </script>
+
+    <script type="text/template" id="select_form_template">
+        <% if(label) { %>
+        <label><%=label %></label>
+        <% } %>
+        <select></select>
+    </script>
+
+    {% include "modal_js_template.html" %}
+
+    {% include "booking_js_templates.html" %}
+
+    {% include "alert.html" %}
+
+{% endblock %}

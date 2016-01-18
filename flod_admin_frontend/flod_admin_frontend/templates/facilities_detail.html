@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block css %}
+    {{ super() }}
+    {% assets "calendar_css" %}
+        <link rel="stylesheet" type="text/css" media="all" href="{{ ASSET_URL }}" />
+    {% endassets %}
+    {% assets "leaflet_css" %}
+        <link rel="stylesheet" type="text/css" media="all" href="{{ ASSET_URL }}"/>
+    {% endassets %}
+{% endblock %}
+
+{% block js %}
+    {{ super() }}
+
+    {% assets "calendar_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    {% assets "leaflet_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    {% assets "organisation_email" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    {% assets "facility_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    <script type="text/javascript">
+
+        (function () {
+            "use strict";
+
+            var facility_data = {{resources | safe}};
+            var facility = new Flod.Facility(facility_data);
+            // Need some extra data to show facilities internal notes correctly.
+            facility.set({
+                user : {
+                    id : '{{ auth.id | safe }}',
+                    private_id : '{{ auth.private_id | safe }}'
+                },
+                notes: {{notes_json | safe}}
+            });
+            var facility_types = {{facility_types | safe}};
+            var unit_types = {{unit_types | safe}};
+            var isFacilityAdmin = {{ is_facility_admin | safe }};
+
+            var mainView = new Flod.FacilityMainView({
+                el: $("#facility_main"),
+                editable:isFacilityAdmin,
+                model: facility,
+                facility_types: facility_types,
+                unit_types: unit_types
+            }).render();
+
+        }());
+
+        $(document).ready(function () {
+            $('.datepicker').datepicker({
+                weekStart: 1,
+                autoclose: true
+            });
+            $('.timepicker').timepicker({
+                showSeconds: false,
+                showMeridian: false
+            });
+        });
+
+    </script>
+{% endblock %}
+
+{% block main %}
+{{ super() }}
+{% include "alert.html" %}
+    <div id="facilityHeader">
+        {% include "facility/facility_header.html" %}
+    </div>
+
+    <div id="facility_main" class="tab-content" style="overflow: visible">
+        <div class="tab-pane active" id="home">
+        </div>
+        <div class="tab-pane" id="location">
+        </div>
+        <div class="tab-pane" id="images">
+            <div id="facility-images-form"></div>
+            <div id="facility-images"></div>
+        </div>
+        <div class="tab-pane" id="documents">
+            <div id="facility-documents-form"></div>
+            <div id="facility-documents"></div>
+        </div>
+        <div class="tab-pane" id="rental">
+            {% include "facility/rental.html" %}
+        </div>
+        <div class="tab-pane" id="blocked_time">
+            {% include "facility/block_time.html" %}
+        </div>
+        <div class="tab-pane" id="administrators">
+            {% include "facility/administrators.html" %}
+        </div>
+        <div class="tab-pane" id="internal_notes">
+            {% include "internal_notes.html" %}
+        </div>
+        <div class="tab-pane" id="calendar">
+            <div class="row-fluid">
+                <div class="alert alert-info">
+                    Kalenderen viser alle godkjente søknader. For å se alle innkomne søknader om tid i dette lokalet må du åpne en søknad under "<a href="/applications">Søknader</a>".
+                </div>
+            </div>
+            <div class="row-fluid">
+              <div id="calendar_wrapper"></div>
+            </div>
+            {% if is_saksbehandler %}
+            <div class="row-fluid">
+              <div class="span4">
+                <div id="emails">
+                  <p style="margin-top: 10px"><button class="btn">Kontakt alle søkere</button></p>
+                </div>
+                <table id="calendar_legend" class="table table-bordered legend">
+                </table>
+              </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block templates %}
+    {{ super() }}
+    <script type="text/tmpl" id="weekly_blocked_time_template">
+    <%- week_day %> kl. <%- start_time %> - <%- end_time %> i perioden <%- start_date %> - <%- end_date %> - <%- note %>
+    <button id="remove_button"><i class="icon-remove"></i></button>
+    </script>
+
+    <script type="text/tmpl" id="blocked_time_interval_template">
+    <%- start_date %> <%- start_time %> - <%- end_date %> <%- end_time %> - <%- note %>
+    <button id="remove_button"><i class="icon-remove"></i></button>
+    </script>
+
+    <script type="text/tmpl" id="user_template">
+        <td><%=private_id %></td><td><%=profile.first_name%> <%=profile.last_name%></td>
+    <% if(private_id != '{{ auth.private_id | safe }}') { %>
+        <td><button class="remove" type="button" title="Fjern"><i class="icon-remove"></i></button></td>
+    <% } else { %>
+        <td></td>
+    <% } %>
+    </script>
+
+    <script type="text/template" id="admin_result_template">
+        <a href='#' tabindex='-1' onclick='return false;' data-id='<%=private_id%>'>
+        <%=private_id%> (<%=profile.first_name%> <%=profile.last_name%>)
+        </a>
+    </script>
+
+    <script type="text/tmpl" id="internal-notes-template">
+      <td><%= note.get('text') %></td>
+      <td><%= note.get('user').private_id %></td>
+      <td><%= moment(note.get('create_time')).format("DD.MM.YYYY") %></td>
+      <% if (note.get("user").id == '{{ auth.id | safe }}') { %>
+        <td><button class="btn btn-small destroy"><i class="icon-remove"></i></button></td>
+     <% } else { %>
+        <td></td>
+      <% } %>
+    </script>
+
+    <script type="text/template" id="modal_template">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Kontakt alle søkere</h3>
+      </div>
+      <div class="modal-body">
+        <p>Adresseliste:</p>
+        <textarea rows="10" style="width: 100%;" readonly><%= emails.join('\n') %></textarea>
+        <p>Kopier listen over (Ctrl+C) og lim inn i &laquo;Til&raquo;-feltet i din epostklient.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-inverse"><%= btn_cancel_txt %></button>
+      </div>
+    </script>
+
+    {% include "facility/facility_js_template.html" %}
+    {% include "facility/facility_images_js_template.html" %}
+    {% include "facility/facility_documents_js_template.html" %}
+
+    {% include "facility/geocoding_js_template.html" %}
+
+{% endblock %}

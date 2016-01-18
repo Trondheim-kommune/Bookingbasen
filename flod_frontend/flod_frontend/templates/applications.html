@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Mine søknader - {{ app_name }}{% endblock %}
+
+{% block js %}
+
+    {{ super() }}
+    {% assets "applicationpage_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    <script type="text/javascript">
+        (function () {
+            "use strict";
+
+            var applications = new Flod.Applications({{applications | safe}});
+            var applicationView = new Flod.ApplicationsListView({
+                "el": $("#application_list"),
+                "applications": applications,
+                "strotimer": new Backbone.Collection()
+            });
+
+            Backbone.history.start();
+        }());
+    </script>
+
+{% endblock %}
+
+{% block content %}
+    {{ super() }}
+    <div class="row-fluid">
+        <div class="span12">
+            <h1 class="small">Mine søknader</h1>
+
+            <div id="alert"></div>
+            <div id="application_list">
+                <ul class="nav nav-tabs application-tabs">
+                    <li class="active">
+                        <a id="applications_tab" href="#">Søknader</a>
+                    </li>
+                    <li><a id="strotime_tab" href="#strotimer">Strøtimer</a></li>
+                    <li><a id="history_tab" href="#history">Historikk</a></li>
+                </ul>
+                <div id="applications">
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block templates %}
+    {{ super() }}
+    {% include "js_templates/applicationlist_templates.html" %}
+    {% include "js_templates/modal_template.html" %}
+    {% include "js_templates/alert.html" %}
+{% endblock %}

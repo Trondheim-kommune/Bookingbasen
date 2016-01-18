@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block js %}
+    {{ super() }}
+    {% assets "statistics_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.datepicker').datepicker({
+                weekStart: 1,
+                autoclose: true
+            });
+        });
+
+    </script>
+{% endblock %}
+
+{% block content %}
+    {{ super() }}
+
+    <div class="span4">
+    <h2>Statistikk Aktør</h2>
+
+    <div class="well">
+    <form class="form-horizontal org_search">
+
+        <div class="control-group">
+            <label class="control-label" for="organisation_id">Aktør</label>
+
+            <div class="controls">
+                <select id="organisation_id" name="organisation_id" placeholder="Aktør">
+                    <option value=''></option>
+                    {% for item in organisations %}
+                        <option value="{{ item.id }}"
+                                {% if params.organisation_id and item.id|string == params.organisation_id %}
+                                selected {% endif %}>{{ item.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="start_date">Fra dato</label>
+
+            <div class="controls">
+                <input type="text" id="start_date" name="start_date" class="datepicker input-small"
+                       data-date-format="dd.mm.yyyy" value="{{ params.start_date }}">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="end_date">Til dato</label>
+
+            <div class="controls">
+                <input type="text" id="end_date" name="end_date" class="datepicker input-small"
+                       data-date-format="dd.mm.yyyy" value="{{ params.end_date }}">
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn">Søk</button>
+            </div>
+        </div>
+    </form>
+    </div>
+
+        {% if organisation_statistics %}
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Lokale</th>
+
+                <th>Timer</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for stats in organisation_statistics %}
+                <tr>
+                    <td>{{ stats.resource.name }}</td>
+                    <td>{{ stats.hours }}</td>
+                </tr>
+
+            {% endfor %}
+            <tr>
+                <td>Total tid</td>
+                <td>{{ total_hours }}</td>
+            </tr>
+
+            </tbody>
+        </table>
+        {% elif params %}
+            Ingen data funnet
+        {% else %}
+            Aktør og fra/til dato må velges
+        {% endif %}
+    </div>
+
+{% endblock %}

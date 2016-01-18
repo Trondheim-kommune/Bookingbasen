@@ -1,0 +1,25 @@
+Hei
+
+Søknaden (søkt {{ application_time }}) om lån av lokalet, {{ resource_name }} er påvirket av ett arrangement.
+
+{% if org_name %}
+Søknaden er på vegne av:
+{{ org_name }}
+{% endif %}
+
+Dine tildelte tider som vil bli påvirket av arrangementet:
+{% for slot in slots %}
+    {{ slot }}
+{% endfor %}
+
+Arrangementet har følgende tider:
+{% for arrangement_slot in arrangement_slots %}
+    {{ arrangement_slot }}
+{% endfor %}
+
+{% if message %}
+Kommentarer fra saksbehandler:
+{{ message }}
+{% endif %}
+
+Dette er en automatisk generert e-post fra Bookingbasen, og kan derfor ikke besvares.

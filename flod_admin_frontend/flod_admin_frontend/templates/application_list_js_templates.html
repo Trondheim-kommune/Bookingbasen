@@ -1,0 +1,44 @@
+<script type="text/template" id="application_table_template">
+    <thead>
+    <tr>
+        <th>Status</th>
+        <th>Type Søknad</th>
+        <th>Aktør</th>
+        <th>Person</th>
+        <th>Lokale</th>
+        <th>Tid</th>
+        <th>Tidspunkt</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</script>
+
+<script type="text/template" id="application_table_row_template">
+    <td><%= status %></td>
+    <td><%= type %><% if (is_arrangement) { print(' (arrangement)') } %></td>
+    <td>
+        <% if (organisation) {
+            print(organisation)
+        } else {
+            print('Privatlån')
+        } %>
+        <% if (organisation_is_deleted) { %>
+            <br /><span class="label label-warning">Aktør fjernet</span>
+        <% }%>
+    </td>
+    <td><%= person %>
+        <% if(person_email_address) { %>
+        <a href="mailto:<%=person_email_address%>" target="_top"><i class="icon-envelope"></i>
+        <% }%>
+    </td>
+    <td><%= facility %><% if (resource_is_deleted) { %><br /><span class="label label-warning">Lokalet fjernet</span><% }%></td>
+    <td><% _.each(times, function(time) { %>
+        <ul class="unstyled">
+            <li style="white-space: nowrap"><%= time %></li>
+        </ul>
+        <% }) %>
+    </td>
+    <td><%= application_time %></td>
+    <td style="white-space: nowrap"><a href="/applications/<%= id %>" class="btn"><% if (showEdit && !resource_is_deleted) { %>Behandle søknad<% } else { %> Se søknad <% } %></a></td>
+</script>

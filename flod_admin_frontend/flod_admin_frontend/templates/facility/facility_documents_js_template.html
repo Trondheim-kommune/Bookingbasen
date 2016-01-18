@@ -1,0 +1,53 @@
+<script type="text/tmpl" id="facility-documents-form-template">
+    <div class="well">
+      <form class="form-horizontal">
+        <div class="control-group">
+            <legend>Dokumenter</legend>
+            <label class="help-inline">Gyldige filtyper er PDF/DOC/DOCX.</label>
+        </div>
+        <div class="control-group" id="title-group">
+          <label class="control-label">Skriv tittel på dokumentet</label>
+          <div class="controls">
+            <input type="text" name="title" placeholder="Tittel på dokument" class="input-xlarge"><br>
+            <span class="help-inline"></span>
+          </div>
+        </div>
+        <div class="control-group" id="document-group">
+          <label class="control-label">Velg dokument</label>
+          <div class="controls">
+            <input type="file" name="document" class="input-xlarge"><br>
+            <span class="help-inline"></span>
+          </div>
+        </div>
+        <input type="hidden" name="facilityId" value="<%= facility.get('id') %>">
+        <div class="control-group">
+          <div class="controls">
+            <button type="submit" class="btn btn-primary" id="save-document">Last opp</button>
+          </div>
+        </div>
+      </form>
+    </div>
+</script>
+
+<script type="text/tmpl" id="facility-documents-template">
+  <div class="row">
+    <div class="span12">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th class="span7">Tittel</th>
+            <th class="span4">Filnavn</th>
+            <th class="span1"></th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</script>
+<script type="text/tmpl" id="facility-document-template">
+  <td><a href="<%= doc.getDocumentUrl() %>"><%= doc.get('title') %></a></td>
+  <td><%= doc.get('filename') %></td>
+  <td><input type="button" class="destroy btn btn-danger" value="Slett"/></td>
+</script>

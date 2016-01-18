@@ -1,0 +1,20 @@
+*.*~
+*.pyc
+*.sh
+*~
+*.json
+.env
+.idea
+.shell-env
+.shell-env-test
+alembic.sh
+venv
+celerybeat.pid
+celerybeat-schedule
+/.noseids
+
+# Testing
+.coverage
+coverage.xml
+js-test
+nosetests.xml

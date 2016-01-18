@@ -1,0 +1,40 @@
+<script type="text/tmpl" id="facility-images-form-template">
+    <div class="well">
+      <form class="form-horizontal">
+        <div class="control-group">
+            <legend>Bilder</legend>
+            <label class="help-inline">Gyldige filtyper er JPG/GIF/PNG.</label>
+        </div>
+        <div class="control-group" id="title-group">
+          <label class="control-label">Skriv tittel på bildet</label>
+          <div class="controls">
+            <input type="text" name="title" placeholder="Tittel på bilde" class="input-xlarge"><br>
+            <span class="help-inline"></span>
+          </div>
+        </div>
+        <div class="control-group" id="image-group">
+          <label class="control-label">Velg bilde</label>
+          <div class="controls">
+            <input type="file" name="image" class="input-xlarge"><br>
+            <span class="help-inline"></span>
+          </div>
+        </div>
+        <input type="hidden" name="facilityId" value="<%= facility.get('id') %>">
+        <div class="control-group">
+          <div class="controls">
+            <button type="submit" class="btn btn-primary" id="save-image">Last opp</button>
+          </div>
+        </div>
+      </form>
+    </div>
+</script>
+
+<script type="text/tmpl" id="facility-image-template">
+  <li class="span3">
+      <div class="thumbnail">
+          <h5><%= image.get('title') %></h5>
+          <img src="<%= image.getImageUrl(270, 180) %>"><br>
+          <input type="button" class="destroy btn btn-danger" value="Slett"/>
+      </div>
+  </li>
+</script>

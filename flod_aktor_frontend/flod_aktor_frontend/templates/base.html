@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}{{app_name}}{% endblock %}</title>
+
+        {% block css %}
+        {% assets "css" %}
+        <link rel="stylesheet" type="text/css" media="all" href="{{ ASSET_URL }}" />
+        {% endassets %}
+        {% endblock %}
+        <link rel="icon" type="image/png"
+              href="{{ url_for('static', filename='images/favicon.png') }}">
+
+    </head>
+
+    <body>
+    <div class="container">
+    {% include "header.html" %}
+
+        {% block main %}
+            {% block content %}
+                {% include "navbar.html" %}
+           {% endblock %}
+
+        {#% include "footer.html" %#}
+        {% endblock %}
+    </div>
+
+    {% block templates %}
+    {% endblock %}
+
+    {% block js %}
+
+    {% assets "js_libs" %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    {% if person %}
+    <script type="text/javascript">
+        (function (ns, undefined) {
+            "use strict";
+            window.loggedInPerson = new Backbone.Model({{ person|tojson|safe }});
+        }());
+    </script>
+    {% endif %}
+
+    {% if user %}
+        <script type="text/javascript">
+            (function (ns, undefined) {
+                "use strict";
+                window.loggedInUser = new Backbone.Model({{ user|tojson|safe }});
+            }());
+        </script>
+    {% endif %}
+
+    {% endblock %}
+
+    </body>
+</html>

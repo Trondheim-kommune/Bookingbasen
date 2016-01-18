@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://rep.trondheim.kommune.no/Felles/Xml/Schema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns="http://rep.trondheim.kommune.no/Felles/Xml/Schema">
+	<xs:element name="JournalPostering" type="ns:JournalPosteringType"/>
+	<xs:complexType name="JournalPosteringType">
+		<xs:sequence>
+			<xs:element name="EksterntSaksnr" type="xs:string"/>
+			<xs:element name="Adressat1" type="ns:AdressatType"/>
+			<xs:element name="Adressat2" type="ns:AdressatType" minOccurs="0"/>
+			<xs:element name="Saksbehandler" type="xs:string"/>
+			<xs:element name="Tittel1" type="xs:string"/>
+			<xs:element name="Tittel2" type="xs:string" minOccurs="0"/>
+			<xs:element name="Dokument" type="ns:DokumentType" maxOccurs="unbounded"/>
+			<xs:element name="ArkivKontekstReferanse" type="xs:string"/>
+			<xs:element name="Tilgangsrestriksjonskode" type="xs:string" minOccurs="0"/>
+			<xs:element name="Skjermingshjemmelkode" type="xs:string" minOccurs="0"/>
+			<xs:element name="SkjermingOpphoerer" type="xs:dateTime" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AdressatType">
+		<xs:sequence>
+			<xs:element name="Fornavn" type="xs:string"/>
+			<xs:element name="Etternavn" type="xs:string"/>
+			<xs:element name="Adresse1" type="xs:string"/>
+			<xs:element name="Adresse2" type="xs:string" minOccurs="0"/>
+			<xs:element name="Postnr" type="xs:string"/>
+			<xs:element name="Sted" type="xs:string"/>
+			<xs:element name="Landkode" type="xs:string"/>
+			<xs:element name="Foedselsnr" type="xs:string" minOccurs="0"/>
+			<xs:element name="Orgnr" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DokumentType">
+		<xs:sequence>
+			<xs:element name="DokumentTittel" type="xs:string"/>
+			<xs:element name="FilNavn" type="xs:string"/>
+			<xs:element name="FilInnhold" type="xs:base64Binary"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

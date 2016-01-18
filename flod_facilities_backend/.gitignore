@@ -1,0 +1,10 @@
+*.*~
+*.pyc
+*.sh
+*~
+.env
+.idea
+.shell-env
+.shell-env-test
+nosetests.xml
+venv

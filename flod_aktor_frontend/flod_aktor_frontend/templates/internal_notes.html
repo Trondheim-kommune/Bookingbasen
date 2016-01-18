@@ -1,0 +1,60 @@
+{% extends "org_base.html" %}
+
+{% block templates %}
+    {{ super() }}
+
+    <script type="text/tmpl" id="internal-notes-template">
+      <td><%= note.get('text') %></td>
+      <td><%= note.get('user').private_id %></td>
+      <td><%= moment(note.get('create_time')).format("DD.MM.YYYY") %></td>
+      <% if (note.get("user").id == '{{ user.id | safe }}') { %>
+        <td><button class="btn btn-small destroy"><i class="icon-remove"></i></button></td>
+      <% } else { %>
+        <td></td>
+      <% } %>
+    </script>
+
+{% endblock %}
+
+{% block js %}
+{{ super() }}
+    {% assets "organisation_internal_notes_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    <script type="text/javascript">
+    (function() {
+        var internal_notes = new Flod.OrganisationInternalNotesCollection({{internal_notes|safe}});
+        var organisation = new Flod.Organisation({{ organisation | safe }});
+        var org_id = organisation.get("id");
+        new Flod.OrganisationInternalNotesView({"model": organisation, "collection": internal_notes, "org_id": org_id, "el": $("#notes_list")}).render();
+
+    }());
+    </script>
+{% endblock %}
+
+{% block org_content %}
+{{ super() }}
+<div id="notes_list">
+<div id="notes-list">
+	<div class="row">
+    <div class="span12">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th class="span6">Notat</th>
+            <th class="span2">Brukernavn</th>
+            <th class="span1">Tidspunkt</th>
+            <th class="span1"></th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+    {% include "internal_notes_new.html" %}
+</div>
+
+{% endblock %}
+

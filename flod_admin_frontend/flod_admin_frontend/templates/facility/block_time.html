@@ -1,0 +1,93 @@
+<div class="well">
+    <legend>Blokkere tid</legend>
+    <span class="help-block">Her kan man legge inn generelle tidsrom eller perioder der lokalet ikke skal kunne lånes.</span>
+    <ul>
+        <li><strong>Ukedager</strong>: Her kan man legge inn tidsrom lokalet ikke kan lånes, f.eks. mens det er
+            undervisning på en skole.
+        </li>
+        <li><strong>Periode</strong>: Her kan man legge inn at lokalet ikke kan lånes mellom to spesifikke datoer,
+            f.eks. pga. det foregår et arrangement i lokalet.
+        </li>
+    </ul>
+
+    <div id="weekly_blocked_time">
+        <div>
+            <form id="weekly_blocked_time_form" class="form-inline">
+                <legend>Ukedager</legend>
+                <div id="weekly_blocked_time_form_validation"></div>
+                <select id="week_day" class="input-small addmargin">
+                    <option value="1">Mandag</option>
+                    <option value="2">Tirsdag</option>
+                    <option value="3">Onsdag</option>
+                    <option value="4">Torsdag</option>
+                    <option value="5">Fredag</option>
+                    <option value="6">Lørdag</option>
+                    <option value="7">Søndag</option>
+                </select>
+
+                <div class="input-append bootstrap-timepicker">
+                    <input id="start_time" readonly="readonly" disabled="disabled" class="timepicker input-small addmargin" data-minute-step="30" data-show-inputs="false" type="text">
+                    <span class="add-on addmargin"><i class="icon-time"></i></span>
+                </div>
+
+                <div class="input-append bootstrap-timepicker">
+                    <input id="end_time" readonly="readonly" disabled="disabled" class="timepicker input-small addmargin" data-minute-step="30" data-show-inputs="false" type="text">
+                    <span class="add-on addmargin"><i class="icon-time"></i></span>
+                </div>
+
+                <input type="text" id="start_date" class="datepicker input-small" data-date-format="dd.mm.yyyy">
+                <input type="text" id="end_date" class="datepicker input-small" data-date-format="dd.mm.yyyy">
+
+                <input type="text" id="blocked_note" class="merknad input-small" placeholder="Merknad for blokkering" >
+
+                <button id="createNew" type="submit" class="btn btn-primary">Legg til</button>
+            </form>
+        </div>
+        <div>
+            <div id="weekly_blocked_time_eight_to_four">
+                <div>
+                    <form id="weekly_blocked_time_eight_to_four_form" class="form-inline">
+                        <div id="weekly_blocked_time_eight_to_four_form_validation"></div>
+                        Blokkere mandag til fredag fra 8:00 - 16:00
+                        <input type="text" id="weekly_start_date" class="datepicker input-small" data-date-format="dd.mm.yyyy">
+                        -
+                        <input type="text" id="weekly_end_date" class="datepicker input-small" data-date-format="dd.mm.yyyy">
+
+                        <input type="text" id="weekly_blocked_note" class="merknad input-small" placeholder="Merknad for blokkering" >
+                        <button id="createNewEightToFour" type="submit" class="btn btn-primary">Legg til</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <ul id="weekly_list"></ul>
+    </div>
+
+
+    <div id="blocked_time_interval">
+        <div>
+            <form id="blocked_time_interval_form" class="form-inline">
+
+                <legend>Periode</legend>
+                <div id="blocked_time_interval_form_validation"></div>
+                <input type="text" id="start_date" class="datepicker input-small" data-date-format="dd.mm.yyyy">
+
+                <div class="input-append bootstrap-timepicker">
+                    <input id="start_time" readonly="readonly" disabled="disabled" class="timepicker input-small addmargin" data-minute-step="30" data-show-inputs="false" type="text">
+                    <span class="add-on addmargin"><i class="icon-time"></i></span>
+                </div>
+                -
+                <input type="text" id="end_date" class="datepicker input-small" data-date-format="dd.mm.yyyy">
+
+                <div class="input-append bootstrap-timepicker">
+                    <input id="end_time" readonly="readonly" disabled="disabled" class="timepicker input-small addmargin" data-minute-step="30" data-show-inputs="false" type="text">
+                    <span class="add-on addmargin"><i class="icon-time"></i></span>
+                </div>
+
+                <input type="text" id="blocked_time_interval_note" class="merknad input-small" placeholder="Merknad for blokkering" >
+                <button id="createNew" type="submit" class="btn btn-primary">Legg til</button>
+            </form>
+        </div>
+        <ul id="blocked_time_interval_list"></ul>
+    </div>
+
+</div>

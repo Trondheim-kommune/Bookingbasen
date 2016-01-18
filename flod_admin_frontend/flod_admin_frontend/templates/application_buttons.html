@@ -1,0 +1,56 @@
+<script type="text/template" id="application_buttons_template">
+    <% if (!resource_is_deleted) { %>
+    <% if (showEdit) { %>
+    <div class="row-fluid">
+        <button id="approve" class="btn btn-large btn-primary">Lagre</button>
+        <button id="delete" class="btn btn-large btn-danger" disabled>Slett tid</button>
+    </div>
+
+    <div class="row-fluid margined">
+        <button id="save" class="btn btn-large btn-success">Godkjenn</button>
+        <button id="deny" class="btn btn-large btn-danger">Avvis</button>
+    </div>
+    <% } else { %>
+    <span class="label large-label label-<% if (status.name === 'Godkjent') { print('success') } else { print('important') }%>"><%= status.name %></span>
+    <% if (status.name === 'Godkjent' || status.name === 'Avvist') { %>
+    <div class="row-fluid margined">
+        <button id="reprocess" class="btn">Behandle på ny</button>
+    </div>
+    <% } %>
+    <% if (is_arrangement && (status.name === 'Godkjent')) { %>
+    <button id="show-send-email-affected-applications" href="#send-email-affected-applications-modal" type="button" data-toggle="modal" class="btn">Send epost til berørte
+        søknader
+    </button>
+
+    <% } %>
+    <% } %>
+    <% if (can_release) { %>
+    <div class="row-fluid margined">
+        <button id="release_time" class="btn">Frigi tid</button>
+    </div>
+    <% } %>
+
+    <% } %>
+</script>
+<script type="text/template" id="send-email-affected-applications-template">
+    <div class="modal-header">
+        <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
+
+        <h3>Send epost til berørte søknader</h3>
+    </div>
+    <div class="modal-body">
+        <label>Søknader</label>
+
+        <div class="arrangement_conflicts"></div>
+        <p>Alle personer med registert epost, markert med ikonet <i class="icon-envelope"></i> i listen over, vil få tilsendt epost.</p>
+
+        <p>Er du sikker på at du vil sende epost?</p>
+
+        <p>Kommentar:</p>
+        <textarea rows="5" style="width:100%;" id="message"></textarea>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-inverse"><%= btn_cancel_txt %></button>
+        <button class="btn btn-primary"><%= btn_txt %></button>
+    </div>
+</script>

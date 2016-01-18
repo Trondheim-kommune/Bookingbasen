@@ -1,0 +1,26 @@
+<script type="text/template" id="calendar_legend_template">
+    <div class="legend">
+    <table class="table table-bordered legend">
+        <tbody>
+        <tr><td class="reserved"></td><td>Enheten har reservert lokalet til eget bruk</td></tr>
+        <tr><td class="granted"></td><td>Lokalet er utlånt</td></tr>
+        <tr><td class="rammetid"></td><td>Rammetid fordelt til særidrettskrets</td></tr>
+        </tbody>
+    </table>
+    </div>
+</script>
+
+<script type="text/template" id="calendar_legend_facility_template">
+    <div class="legend">
+    <table class="table table-bordered legend">
+        <tbody>
+        <tr><td class="reserved"></td><td>Enheten har reservert lokalet til eget bruk</td></tr>
+        <tr><td class="rammetid"></td><td>Rammetid fordelt til særidrettskrets</td></tr>
+        <% _.each(colors, function (color, name) { %>
+
+            <tr><td style="background: <%= color %>;"></td><td><%= name %></td></tr>
+        <% }) %>
+        </tbody>
+    </table>
+    </div>
+</script>

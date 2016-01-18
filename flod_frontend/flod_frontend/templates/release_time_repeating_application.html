@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Fast lån - Frigi tid{% endblock %}
+
+
+{% block js %}
+{{ super() }}
+{% assets "release_time_repeating_application_js" %}
+<script type="text/javascript" src="{{ ASSET_URL }}"></script>
+{% endassets %}
+
+<script type="text/javascript">
+    (function () {
+        "use strict";
+
+        var repeatingApplication = new Flod.RepeatingApplication({{repeating_application | safe}}, {
+            parse: true
+        });
+        var releaseTimeRepeatingApplicationView = new Flod.ReleaseTimeRepeatingApplicationView({
+            "el": $("#container"),
+            "model": repeatingApplication
+        });
+        releaseTimeRepeatingApplicationView.render();
+    }());
+</script>
+
+{% endblock %}
+
+{% block content %}
+{{ super() }}
+<div class="row-fluid">
+    <div class="span10">
+        <h1 class="small">Frigi tid for fastlån</h1>
+        <div id="container">
+            <div id="repeating-application">
+            </div>
+            <div id="repeating-date-range-changer">
+            </div>
+            <div id="repeating-time-period-changer">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block templates %}
+{{ super() }}
+
+<script type="text/template" id="dates_select_template">
+    <div class="span2">
+        <div class="control-group">
+            <label class="control-label" for="start_date"><strong>Startdato</strong></label>
+            <div class="controls">
+                <div id="start_date_div" class="input-append date" data-date="" data-date-format="dd.mm.yyyy">
+                    <input id="start_date" class="input-small" readonly type="text">
+                    <span class="add-on"><i class="icon-calendar"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="span2">
+        <div class="control-group">
+            <label class="control-label" for="end_date"><strong>Sluttdato</strong></label>
+            <div class="controls">
+                <div id="end_date_div" class="input-append date" data-date="" data-date-format="dd.mm.yyyy">
+                    <input id="end_date" class="input-small" readonly type="text">
+                    <span class="add-on"><i class="icon-calendar"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/template" id="application_template">
+    <dl class="dl-horizontal">
+        <dt>Aktør</dt>
+        <dd><%= aktor %></dd>
+        <dt>Lokale</dt>
+        <dd><%= resource %></dd>
+        <dt>Tid</dt>
+        <dd><ul class="unstyled" id="repeating-slots"></ul></dd>
+    </dl>
+</script>
+
+<script type="text/template" id="release_date_range_repeating_slot_template">
+    <div>
+        <br />
+        Frigi en bestemt dag eller periode innenfor <%= start_date %> og <%= end_date %> (hvis du frigir i midten vil den bli delt opp i to).
+        <br />
+        <br />
+        <div id="date-selection"></div>
+        <a class="btn" id="release-date-range">Frigi</a>
+    </div>
+</script>
+
+<script type="text/template" id="release_time_period_repeating_slot_template">
+    <div>
+        <br />
+        Frigi en bestemt time eller tidspunkt innenfor <%= start_time %> og <%= end_time %> (hvis du frigir i midten vil den bli delt opp i to).
+        <br />
+        <br />
+        <div id="time-picker"></div>
+        <a class="btn" id="release-time-period">Frigi</a>
+    </div>
+</script>
+
+<script type="text/template" id="repeating_slot_template">
+    <li>
+        <%= day %>
+        <a class="btn" id="release-date-range"><%= start_date %> - <%= end_date %></a>
+        <a class="btn" id="release-time-period"><%= start_time %> - <%= end_time %></a>
+    </li>
+</script>
+
+{% include "js_templates/alert.html" %}
+{% include "js_templates/time-picker.html" %}
+
+{% endblock %}

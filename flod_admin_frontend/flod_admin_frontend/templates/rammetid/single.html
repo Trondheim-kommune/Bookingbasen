@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block js %}
+{{ super() }}
+
+{% assets "single_rammetid_js" %}
+<script type="text/javascript" src="{{ ASSET_URL }}"></script>
+{% endassets %}
+
+<script type="text/javascript">
+    (function () {
+        "use strict";
+        var rammetid_data = {{rammetid | safe}};
+        var rammetid = new Flod.Rammetid(rammetid_data);
+        new Flod.SingleRammetidView({
+            el: $("#single_rammetid_view"),
+            model: rammetid
+        }).render();
+    }());
+</script>
+{% endblock %}
+
+{% block main %}
+{{ super() }}
+<h1>Tildelt rammetid</h1>
+
+<div>
+    <b>Paraplyorganisasjon:</b> {{ umbrella_organisation['name'] }}
+    {% if umbrella_organisation['is_deleted'] %}
+        <span class="label label-warning">Denne paraplyorganisasjonen er fjernet</span>
+    {% endif %}
+</div>
+<div>
+    <b>Lokale</b>: {{ resource['name'] }}
+</div>
+
+<br />
+
+<div id="single_rammetid_view"></div>
+
+<script type="text/template" id="single_rammetid_template">
+    <b>Tildelt tid:</b>
+    <ul>
+    <% _.each(times, function(time) { %>
+        <li><%= time %></li>
+    <% }) %>
+    </ul>
+    <div class="button-group">
+        <div class="btn-group">
+            <button id="delete" href="#deleteModal" role="button" data-toggle="modal" type="button" class="btn btn-danger">Fjern</button>
+        </div>
+    </div>
+    <div id="deleteModal" class="modal hide">
+        <div class="modal-header">
+            <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
+            <h3>Fjern tildelt rammetid</h3>
+        </div>
+        <div class="modal-body">
+            <p>Er du sikker på at du vil fjerne tildelt rammetid?</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#" id="btnYes" class="btn danger">Ja</a>
+            <a href="#" data-dismiss="modal" aria-hidden="true" class="btn secondary">Nei</a>
+        </div>
+    </div>
+</script>
+
+{% endblock %}

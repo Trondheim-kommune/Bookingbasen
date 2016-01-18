@@ -1,0 +1,14 @@
+*.*~
+*.pyc
+*.sh
+*~
+.DS_Store
+.env
+.idea
+.shell-env
+.shell-env-test
+flod_aktor_frontend/static/.webassets-cache
+flod_aktor_frontend/static/gen
+nosetests.xml
+venv
+

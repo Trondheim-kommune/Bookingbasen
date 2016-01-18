@@ -1,0 +1,53 @@
+<div class="well">
+    <legend>Tilhørighet</legend>
+    <div class="row-fluid">
+        <div class="span6">
+            <label>Type enhet <span class="required">*</span></label>
+            <select required="required" class="span12" id="unit_type" name="unit_type">
+                <option value="-1">Velg en enhetstype:</option>
+                <% _.each(unit_types, function(a_unit_type) { %>
+                <option value="<%= a_unit_type.id%>"  <% if(unit_type && a_unit_type.id == unit_type.id) { print('selected'); } %>>
+                    <%= a_unit_type.name %>
+                </option>
+                <% }) %>
+            </select>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span6">
+            <label>Navn på enhet <span class="required">*</span></label>
+            <input class="span12" type="text" id="unit_name" required="required" value="<%- unit_name %>" name="unit_name">
+        </div>
+        <div class="span6">
+            <label>Underliggende avdeling</label>
+            <input class="span12" type="text" id="department_name" value="<%- department_name %>" name="department_name">
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span4">
+            <label>Enhetskode<span class="help-inline">6 siffer</span></label>
+            <input class="span12" type="text" id="unit_code" value="<%- unit_number %>" name="unit_number">
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span6">
+            <label>Enhetsleder</label>
+            <input class="span12" type="text" id="unit_leader_name" value="<%- unit_leader_name %>" name="unit_leader_name">
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span4">
+            <label>Telefonnummer til enhet</label>
+            <input class="span12" type="tel" id="unit_phone_number" value="<%- unit_phone_number %>" name="unit_phone_number">
+        </div>
+        <div class="span8">
+            <label>E-post postmottak</label>
+            <input class="span12" type="email" id="unit_email_address" value="<%- unit_email_address %>" name="unit_email_address">
+        </div>
+    </div>
+
+
+</div>

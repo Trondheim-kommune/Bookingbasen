@@ -1,0 +1,35 @@
+<script type="text/tmpl" id="umbrella_information_template">
+    <form>
+        <div class="button-group pull-right">
+            <div class="btn-group">
+                <button id="delete" href="#deleteModal" role="button" data-toggle="modal" type="button" class="btn btn-danger">Fjern paraplyorganisasjonen</button>
+            </div>
+        </div>
+        <div class="button-group">
+            <button id="save" type="button" class="btn btn-primary">Lagre</button>
+        </div>
+        <fieldset class="push--top">
+            <div class="well">
+            <legend>Navn</legend>
+            <div class="row-fluid">
+                <div class="span6">
+                    <label>Navn på paraplyorganisasjonen <span class="required">*</span></label>
+                    <input class="span12" type="text" id="name" name="name" required="required" value="<%- name %>">
+                </div>
+            </div>
+        </fieldset>
+    </form>
+    <div id="deleteModal" class="modal hide">
+        <div class="modal-header">
+            <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
+             <h3>Fjern paraplyorganisasjonen</h3>
+        </div>
+        <div class="modal-body">
+            <p>Er du sikker på at du vil fjerne paraplyorganisasjonen?</p>
+        </div>
+        <div class="modal-footer">
+          <a href="#" id="btnYes" class="btn danger">Ja</a>
+          <a href="#" data-dismiss="modal" aria-hidden="true" class="btn secondary">Nei</a>
+        </div>
+    </div>
+</script>

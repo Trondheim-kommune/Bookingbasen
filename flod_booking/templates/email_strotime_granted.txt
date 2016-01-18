@@ -1,0 +1,10 @@
+Hei {{ person_name }}
+
+Strøtimen av lokalet, {{ resource_name }}, er {{ application_status }}.
+
+Følgende tider er tildelt:
+{% for slot in slots %}
+    {{ slot }}
+{% endfor %}
+
+Dette er en automatisk generert e-post fra Bookingbasen, og kan derfor ikke besvares.

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Finn lokale - {{app_name}}{% endblock %}
+
+{% block css %}
+{{ super() }}
+        {% assets "leaflet_css" %}
+        <link rel="stylesheet" type="text/css" media="all" href="{{ ASSET_URL }}" />
+        {% endassets %}
+        <style type="text/css">
+            #search_results ul li {
+                border: 1px solid #000000;
+                height: 150px;
+                margin-bottom: 10px;
+            }
+
+            #search_results ul li {
+                overflow-y: scroll;
+            }
+
+            #search_results ul li.highlight {
+                border: 1px solid #ff0000;
+            }
+
+        </style>
+{% endblock %}
+
+{% block js %}
+{{ super() }}
+        {% assets "leaflet_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+        {% endassets %}
+        {% assets "searchpage_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+        {% endassets %}
+        <script type="text/javascript">
+            (function() {
+
+                var districts = {{districts | safe }};
+                var facility_types = {{facility_types | safe }};
+                facility_types = _.reduce(facility_types, function(result, facility_type){
+                    result[facility_type.id] = { "name": facility_type.name};
+                    return result;
+                }, {});
+                new Flod.SearchView({
+                    "el": $("#search_view"),
+                    "data": {
+                        "districts": districts,
+                        "facility_types": facility_types
+                    }
+                });
+            }());
+            Backbone.history.start();
+        </script>
+
+{% endblock %}
+
+{% block content %}
+{{ super() }}
+<h1>Finn lokale i Trondheim kommune</h1>
+<div class="tabbable" id="search_view">
+    <ul class="nav nav-tabs">
+        <li><a href="#" id="search_tab">Søk med filter</a></li>
+        <li><a href="#map" id="map_search_tab">Søk med kart</a></li>
+    </ul>
+    <div class="search_content">
+
+    </div>
+</div>
+<hr>
+{% endblock %}
+
+
+{% block templates %}
+    {{ super() }}
+    {% include "js_templates/search_templates.html" %}
+{% endblock %}

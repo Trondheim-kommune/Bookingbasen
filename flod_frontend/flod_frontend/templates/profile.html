@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Min profil - {{app_name}}{% endblock %}
+
+{% block content %}
+{{ super() }}
+<div class="row-fluid">
+  <div class="span10" id="main">
+    <h1 class="small">Min profil</h1>
+  </div>
+</div>
+
+{% if organisations %}
+<div class="row-fluid">
+
+    {% if organisations %}
+    <div class="span4">
+        <h2>Mine organisasjoner</h2>
+        <ul class="nav nav-tabs nav-stacked">
+            {% for org in organisations %}
+            <li>
+                <a href="{{ aktor_url }}/login?next=/organisations/{{ org.id }}" target="_blank"><i class="icon-chevron-right"></i>{{ org.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+</div>
+{% endif %}
+
+{% if umbrella_organisations %}
+<div class="row-fluid">
+
+    {% if umbrella_organisations %}
+    <div class="span4">
+        <h2>Mine paraplyorganisasjoner</h2>
+        <ul class="nav nav-tabs nav-stacked">
+            {% for umbrella_organisation in umbrella_organisations %}
+            <li>
+                <a href="rammetid/{{ umbrella_organisation.id }}"><i class="icon-chevron-right"></i>{{ umbrella_organisation.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif%}
+
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block js %}
+    {{ super() }}
+    {% assets "profilepage_js" %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    <script type="text/javascript">
+        (function () {
+            "use strict";
+
+            var user_data = {{user_data|tojson|safe}};
+
+            var person = new Flod.Person(user_data);
+            var form = new Flod.ProfileFormView({model: person});
+
+            $("#main").append(form.render().$el);
+
+        }());
+    </script>
+{% endblock %}
+
+
+{% block templates %}
+    {{ super() }}
+    {% include "js_templates/alert.html" %}
+    <script type="text/template" id="profile_form_template">
+        <!--    <form class="form-horizontal">-->
+        <div class="control-group">
+            <label class="control-label left" for="id_first_name">Fornavn</label>
+            <div class="controls">
+                <input type="text" id="id_first_name" name="first_name" value="<%= first_name %>">
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label left" for="id_last_name">Etternavn</label>
+            <div class="controls">
+                <input type="text" id="id_last_name" name="last_name"  value="<%= last_name %>">
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label left" for="id_email_address">Epost</label>
+            <div class="controls">
+                <input type="email" id="id_email_address" name="email_address" value="<%= email_address %>">
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label left" for="id_phone_number">Telefon</label>
+            <div class="controls">
+                <input type="text" id="id_phone_number" name="phone_number" value="<%= phone_number %>">
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-primary">Lagre</button>
+            </div>
+        </div>
+        <!--</form>-->
+    </script>
+{% endblock %}

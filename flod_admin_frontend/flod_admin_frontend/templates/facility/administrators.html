@@ -1,0 +1,25 @@
+<div id="message"></div>
+<div class="well">
+    <legend>Administratorer</legend>
+    <table class="table table-condensed">
+        <thead><tr><th>Brukernavn</th><th>Navn</th><th>Fjern tilgang</th></tr></thead>
+        <tbody id="current_admins_list"></tbody>
+    </table>
+
+    <legend class="margined">Tildel administratortilgang</legend>
+    <span class="help-block">Innlogging med det brukernavn og passord som du bruker på Trondheim kommunes intranett (TK-nett)</span>
+    <form id="add_admin_credential_form" class="form-inline">
+        <div id="add_admin_credential" class="control-group">
+            <div class="controls">
+                <label for="bruker_private_id" class="control-label">Brukernavn TK-nett</label>
+
+                <div class="dropdown">
+                    <input id="bruker_private_id" type="text" autocomplete="off" class="input-small typeahead">
+                    <button type="button" id="save" class="btn btn-primary">Legg til</button>
+                    <span id="add_admin_validation" class="help-inline"></span>
+                    <ul id="quick_search_results" class="dropdown-menu" role="menu"></ul>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

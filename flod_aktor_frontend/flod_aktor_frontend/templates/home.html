@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+{{ super() }}
+<div class="row-fluid spaced">
+    <div class="span10">
+        <h1 class="small">Oversikt over frivilligheten, idretten og kulturlivet i Trondheim</h1>
+        <p>&nbsp;</p>
+        <div class="row-fluid">
+
+            <a href="/organisations" class="black">
+            <div class="span3 well box">
+                <h3>Finn aktør</h3>
+            </div>
+            </a>
+
+            {% if can_register %}
+            <a href="/register_org"  class="black">
+                <div class="offset1 span3 well box">
+                    <h3>Registrer aktør</h3>
+                </div>
+            </a>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

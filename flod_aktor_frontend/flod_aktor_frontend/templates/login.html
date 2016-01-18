@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}{{ app_name }}{% endblock %}</title>
+
+        {% block css %}
+            {% assets "css" %}
+                <link rel="stylesheet" type="text/css" media="all" href="{{ ASSET_URL }}"/>
+            {% endassets %}
+        {% endblock %}
+        <link rel="icon" type="image/png"
+              href="{{ url_for('static', filename='images/favicon.png') }}">
+
+    </head>
+
+    <body>
+        <div id="page" class="container">
+            <div id="" class="navbar navbar-inverse">
+                <div class="navbar-inner">
+                <a class="brand pull-left-desktop-only" href="/"><img alt="Trondheim Kommune Logo" src="{{ url_for('static', filename='images/tk-logo-only.png')}}" />TRONDHEIM KOMMUNE <span>{{app_name}}</span></a>
+                    </div>
+            </div>
+            <div class="clearfix">
+                <a href="/admin/login" class="pull-right underlined-text" type="submit">Logg inn som saksbehandler</a>
+            </div>
+            <div id="page-content" class="content well">
+                <h2>Logg inn</h2>
+                <h4>
+                    For å registrere eller oppdatere en aktør i Aktørbasen må du logge inn med ID-porten.
+                </h4>
+
+                <br>
+
+                <a href="/bruker/login" class="btn btn-large btn-primary" type="submit">Logg inn</a>
+
+            </div>
+
+
+        </div>
+    </body>
+</html>

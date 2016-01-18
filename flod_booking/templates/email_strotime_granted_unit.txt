@@ -1,0 +1,12 @@
+Til {{ unit_name }},
+
+Gjelder lokalet {{ resource_name }}:
+
+{{ person_name }} har booket en strøtime.
+
+Følgende tider er tildelt:
+{% for slot in slots %}
+    {{ slot }}
+{% endfor %}
+
+Dette er en automatisk generert e-post fra Bookingbasen, og kan derfor ikke besvares.

@@ -1,0 +1,84 @@
+<div class="row">
+    <div id="messages" class="span12">
+        <!-- Show success and error messages. -->
+    </div>
+</div>
+
+<div class="well">
+    <h3 class="small">Ansvarlige Personer</h3>
+    <span class="help-block">
+    Følgende personer er ansvarlige for denne paraplyorganisasjonen. Disse personene er ansvarlige
+        for å fordele rammetid som er tildelt paraplyorganisasjonen.</span>
+    <div id="responsible_persons_list" class="well"></div>
+</div>
+
+<script type="text/template" id="add_member_template">
+    <button id="add_member" class="btn btn-primary" type="button">Legg til person</button>
+</script>
+
+<script type="text/template" id="add_member_form_template">
+    <fieldset>
+        <legend>Legg til person</legend>
+        <div id="user_alert" class="hide alert alert-danger">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <h4>Feil i skjemadata!</h4>
+            <ul id="errors">
+            </ul>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="first_name">Fornavn</label>
+            <div class="controls">
+                <input type="text" id="first_name">
+                <span class="help-inline"></span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="last_name">Etternavn</label>
+            <div class="controls">
+                <input type="text" id="last_name">
+                <span class="help-inline"></span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="nin">Fødselsnummer</label>
+            <div class="controls">
+                <input type="text" id="nin">
+                <span class="help-inline"></span>
+            </div>
+        </div>
+
+        {% if user_mode == 'admin' %}
+        <div class="control-group">
+            <label class="control-label" for="phone_number">Telefon</label>
+            <div class="controls">
+                <input type="text" id="phone_number">
+                <span class="help-inline"></span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="nin">Epost</label>
+            <div class="controls">
+                <input type="email" id="email_address">
+                <span class="help-inline"></span>
+            </div>
+        </div>
+        {% endif %}
+
+        <button id="save" type="button" class="btn btn-primary add-btn">Legg til</button>
+    </fieldset>
+</script>
+
+<script type="text/template" id="member_view_template">
+
+    <td><%= data.last_name %></td>
+    <td><%= data.first_name %></td>
+    <td><%= data.phone_number %></td>
+    <td><%= data.email_address %></td>
+    <td>
+        <button type="button" class="btn remove-btn" title="Fjern"><i class="icon-remove-sign"></i></button>
+    </td>
+
+</script>

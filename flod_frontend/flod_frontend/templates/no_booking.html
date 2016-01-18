@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}Lånesøknad - {{ app_name }}{% endblock %}
+
+{% block content %}
+{{ super() }}
+        <h2>Lokalet kan ikke lånes ut.</h2>
+        <p>{{message}}</p>
+{% endblock %}

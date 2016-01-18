@@ -1,0 +1,16 @@
+-e git+https://github.com/Trondheim-kommune/python-saml-idporten.git@master#egg=idporten.saml
+-e git+https://github.com/Trondheim-kommune/python-saml-adfs.git@master#egg=python-saml-adfs
+cssmin==0.2.0
+Flask-Assets==0.9
+Flask-BasicAuth==0.2.0
+Flask-Login==0.2.10
+Flask==0.10.1
+itsdangerous==0.24
+Jinja2==2.7.2
+jsmin==2.0.9
+lxml==3.3.5
+MarkupSafe==0.21
+pip-tools==0.3.4
+requests==2.2.1
+webassets==0.9
+Werkzeug==0.9.4

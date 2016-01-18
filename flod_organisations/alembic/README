@@ -1,0 +1,139 @@
+Alembic in flod
+================
+
+Conventions
+-----------
+* Do not use SQLAlchemy sqlalchemy.MetaData.create_all() anymore, alembic har the responsibility of creating and
+modifying the database
+* Let the sequences in the database run, do not override them by setting values in the fields they operate on. If you
+ do that the sequence will soon or later generate the same id and cause a runtime error in the application
+* Do not assume that you know what values are foun in foreignkey columns in the database. If you insert a row which
+has a foreignkey constraint to a row in another table query the other table to get the actual foreign key value.
+* Remember that the standard sqlalchemy engine is not explicitely started in the alembic scripts. You´ll have to use
+the alembic operations found in op.Operations (see snippets under).
+* Alembic runs each invocation in a transaction, and will rollback on error. If you run the upgrades one script at a
+time you loose the "rollback all" feature.
+* Use "--autogenerate" as much at you want! But be careful and verify what was generated as it does not detect all
+modifications (and certainly not inserts).
+
+
+Alembic scripts snippets
+------------------------
+* Creating a table:
+op.create_table('brreg_activity_codes',
+                sa.Column('id', sa.Integer(), nullable=False),
+                sa.Column('code', sa.String(), nullable=True),
+                sa.Column('description', sa.String(), nullable=True),
+                sa.Column('capacity', sa.Integer(), nullable=False),
+                sa.PrimaryKeyConstraint('id')
+)
+
+* Creating a constraint:
+op.create_check_constraint(
+    "ck_is_positive_or_0_capacity",
+    'brreg_activity_codes',
+    'capacity>-1'
+)
+
+* Using bulk insert to add data to an already existing table:
+brreg_activity_codes_table = table('brreg_activity_codes',
+                                   column('code', String),
+                                   column('description')
+)
+
+op.bulk_insert(
+    brreg_activity_codes_table,
+    [
+        {
+            'code': '1 100',
+            'description': 'Kunst og kultur'
+        },
+        {
+            'code': '1 200',
+            'description': 'Idrett'
+        }
+    ]
+)
+
+NB: the first statement does not create the table, it just declares it for use in the bulk_insert.
+
+* Inserting GIS objects:
+You need to convert json (which is the stadard way of defining the data) to the correct wkt_element. This method can
+for example be used:
+
+def json_to_wkt(json):
+    dict_as_shape = shape(json)
+    wkt_element = WKTElement(dict_as_shape.wkt, srid=4326)
+    return wkt_element.desc
+
+When this is in place you can use it to insert this kind of data (assuming that the column in the table was created
+with the same srid as in the code under):
+
+district_table = table('districts',
+                           column('name', String),
+                           column('geog', Geometry(geometry_type='POLYGON', srid=4326))
+    )
+    trondheim_vest = {"type": "Polygon", "srid": 4326, "coordinates": [
+        [[10.20355224609375, 63.345122236072093, 0.0], [10.238742828369141, 63.38313998421129, 0.0],
+         [10.252647399902344, 63.385985443096992, 0.0]]]}
+
+    op.bulk_insert(
+        district_table,
+        [
+            {"name": "Trondheim Vest", "geog": 'SRID=4326;' + json_to_wkt(trondheim_vest)},
+        ]
+    )
+
+* Inserting rows with foreign key constraints:
+
+def get_brreg_activity_code_id(brreg_activity_codes_code):
+    find_id_for = """
+        SELECT id
+        FROM   brreg_activity_codes
+        WHERE  code like '%s'
+    """
+
+    connection = op.get_bind()
+    result = connection.execute(find_id_for % brreg_activity_codes_code)
+    if(result.rowcount != 1):
+        raise RuntimeError('The brreg_activity_codes with code %s does not exist!' % brreg_activity_codes_code)
+    return result.first()['id']
+
+def upgrade():
+    # getting the foreign key value by querying the database
+    idrett_id = get_brreg_activity_code_id('1 200')
+
+    flod_activity_type_table = table('flod_activity_type',
+                                      column('name', String),
+                                      column('brreg_activity_code_id', Integer)
+    )
+
+    # Using the value found
+    op.bulk_insert(
+        flod_activity_type_table,
+        [
+            {'name': 'Aking, bob, skeleton', 'brreg_activity_code': idrett_id}
+        ]
+    )
+
+Using alembic
+-------------
+http://alembic.readthedocs.org/en/latest/
+
+
+Production data and schema definitions for this application are managed by the set of files under ./versions.
+
+Create a new script with:
+$> alembic revision -m "my message"
+
+Edit the newyly created script in ./versions. Look througt already existing scripts for information on how to code
+the migration.
+
+When ready run the migration:
+$> alembic upgrade head
+
+Verify also that you still can migrate from a virgin database up to head. Remember to run the project´s test as they
+also trigger the alembic upgrade head process.
+
+
+

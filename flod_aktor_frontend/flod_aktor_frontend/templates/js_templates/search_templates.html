@@ -1,0 +1,134 @@
+<script type="text/template" id="search_template">
+    <div class="row-fluid">
+        <div class="span3 search_sidebar" id="search_params"></div>
+        <div class="span9" id="search_results"></div>
+    </div>
+</script>
+
+<script type="text/template" id="map_search_template">
+    <div class="row-fluid">
+        <div class="span3 search_sidebar" id="search_params"></div>
+        <div class="span9">
+            <div class="row-fluid">
+                <div class="span12 searchmap" id="map"></div>
+                <div class="span12" id="search_results"></div>
+            </div>
+        </div>
+
+    </div>
+</script>
+
+<!-- templates -->
+<script type="text/template" id="search_result_template">
+
+    <div class="span2">
+        <div class="thumbnail">
+            <img src="<% if(image) { print(image) } else { %>{{ url_for('static', filename='images/not_found_200_150.png') }}<% } %>"/>
+        </div>
+    </div>
+    <div class="span8">
+        <div class="row-fluid">
+            <div class="span6">
+                <h3><%= name %></h3>
+            </div>
+            <div class="span6 greentext">
+                <% if (capacity) { %>
+                Maks <%= capacity %> personer
+                <% } else { %>
+                Kapasitet ukjent
+                <% } %>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <% if(short_description) { %><p><%= short_description %></p><% }%>
+            </div>
+        </div>
+    </div>
+
+    <div class="span2">
+        <div class="span1">
+            <p class="greentext"><% if(district) { print(district.name) } else { print("-") } %></p>
+        </div>
+
+        <div class="row-fluid button-row">
+
+        </div>
+        <div class="row-fluid button-row">
+
+        </div>
+        <div class="row-fluid button-row">
+            <button class="btn btn details">Detaljer</button>
+        </div>
+    </div>
+
+</script>
+
+<script type="text/template" id="pagination_template">
+    <div class="span12">
+        <% if (prev) { %>
+        <button class="btn btn-small prev pull-left" type="button" title="Forrige <%= numPrPage %>"><i class="icon-chevron-left"></i></button>
+        <% } if (next) { %>
+        <button class="btn btn-small next pull-right" type="button" title="Neste <%= numPrPage %>"><i class="icon-chevron-right"></i></button>
+        <% } %>
+    </div>
+</script>
+
+
+<script type="text/template" id="searching_template">
+    <div class="row-fluid search_header">
+        <div class="span12">
+            <p class="pull-left"><img src="{{ url_for('static', filename='images/spinner.gif') }}" alt="Søker" width="16" height="16"></p>
+        </div>
+    </div>
+</script>
+
+<script type="text/template" id="notfound_template">
+    <div class="row-fluid search_header">
+        <div class="span12">
+            <p class="pull-left">Ditt søk gav ingen treff. Prøv med mindre spesifikke kriterier?</p>
+        </div>
+    </div>
+</script>
+
+<script type="text/template" id="seach_result_top_template">
+    <div class="row-fluid search_header">
+        <div class="span12">
+            <p class="pull-left">Aktuelle treff for ditt søk: <%= num_results %></p>
+
+            <p class="select_links">
+                <% if (resultsPrPage !== 10) { %><a href="#" id="show10">Vis 10 per side</a> <% } %>
+                <% if (resultsPrPage !== 20 && numResults > 10) { %><a href="#" id="show20">Vis 20 per side</a><% } %>
+                <% if (resultsPrPage !== 50 && numResults > 20) { %><a href="#" id="show50">Vis 50 per side</a><% } %>
+            </p>
+
+        </div>
+    </div>
+</script>
+
+<script type="text/template" id="checkbox_group_template">
+    <fieldset><label class="checkbox inline"><input type="checkbox" id="<%=id%>" value="<%=id%>"><%=name%></label></fieldset>
+</script>
+
+<script type="text/template" id="option_template">
+    <option value='<%= key %>' <% if(selected) { %>selected<%}%>><%=name%></option>
+</script>
+
+<script type="text/template" id="input_template">
+    <input type="text" placeholder="<%=placeholder %>" id="<%=id %>">
+</script>
+
+<script type="text/template" id="date_select_template">
+    <label class="radio">
+        <input type="radio" name="repeatingRadios" id="repeating" value="1">
+        Gjentagende fast lån
+    </label>
+    <label class="radio">
+        <input type="radio" name="repeatingRadios" id="no_repeating" value="0" checked>
+        Engangslån
+    </label>
+    <div class="control-group horizontal">
+        <label class="control-label" for="date_btn">Dato: <span id="date"><%= date %></span></label>
+        <button type="button" id="date_btn" data-date="<%= date %>"  data-date-format="dd.mm.yyyy" class="btn"><i class="icon-calendar"></i></button>
+    </div>
+</script>

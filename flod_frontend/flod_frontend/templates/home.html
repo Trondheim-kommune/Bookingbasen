@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block js %}
+    {{ super() }}
+    {% assets "forsiden_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    <script type="text/javascript">
+        (function() {
+            "use strict";
+            var settings = new Flod.Settings();
+            settings.fetch({
+                'success' : function(){
+                    new Flod.ButtonsView({"model": settings, "el": $("#buttons")}).render()
+                }
+            });
+        }());
+    </script>
+{% endblock %}
+
+{% block content %}
+{{ super() }}
+<div class="row-fluid spaced">
+    <div class="span10">
+        <h1 class="small">Søk om lån av kommunalt lokale eller idrettsanlegg</h1>
+        <p>
+            Frivillige organisasjoner, idrettsklubber og andre aktører kan låne
+            lokaler i skoler, barnehager, helsesentre, kulturlokaler
+            og idrettsanlegg.
+        </p>
+
+        <div class="row-fluid" id="buttons"></div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block templates %}
+    {{ super() }}
+    <script type="text/template" id="buttons_template">
+
+        <a class="black" <% if (repeating_booking_allowed) { %>  href="/search" <%} else { %> href="http://trondheim.kommune.no/lokaler/type" target="_blank" <%}%>>
+
+        <div class="span3 well box">
+            <h3>Fast lån</h3>
+            <% if (repeating_booking_allowed) { %>
+            <p class="button-text"> Søknadsfrist <%= repeating_booking_deadline %> </p>
+            <br />
+            <p class="button-text"> Det er mulig å søke fram til <%= repeating_booking_enddate %></p>
+            <%} else { %>
+            <p class="button-text">Det er ikke mulig å søke om fast lån nå</p>
+            <p class="button-link">Mer informasjon</p>
+            <% } %>
+        </div>
+        </a>
+
+        <a class="black" <% if (single_booking_allowed) { %>  href="/search" <%} else { %> href="http://trondheim.kommune.no/lokaler/type" target="_blank" <%}%>>
+        <div class="offset1 span3 well box">
+            <h3>Engangslån</h3>
+            <% if (single_booking_allowed) { %>
+            <p class="button-text">Søknadsfrist 3 uker før</p>
+            <br />
+            <p class="button-text">Det er mulig å søke fram til <%= single_booking_enddate %></p>
+            <%} else { %>
+            <p class="button-text">Det er ikke mulig å søke om engangslån nå</p>
+            <p class="button-link">Mer informasjon</p>
+            <% } %>
+        </div>
+        </a>
+
+        <a class="black" <% if (strotime_booking_allowed) { %>  href="/strotimer" <%} else { %> href="http://trondheim.kommune.no/lokaler/type" target="_blank" <%}%>>
+        <div class="offset1 span3 well box">
+            <h3>Strøtimer</h3>
+            <% if (strotime_booking_allowed) { %>
+            <p class="button-text">Ledig treningstid 3 uker fram i tid</p>
+            <%} else { %>
+            <p class="button-text">Det er ikke mulig å reservere strøtimer nå</p>
+            <p class="button-link">Mer informasjon</p>
+            <% } %>
+        </div>
+        </a>
+    </script>
+{% endblock %}

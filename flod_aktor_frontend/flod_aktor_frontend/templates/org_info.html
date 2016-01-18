@@ -1,0 +1,179 @@
+{% extends "org_base.html" %}
+{% block org_content %}
+{{ super() }}
+        <h1 class="small">{{organisation.get("name")}}</h1>
+        {%  if organisation.get('only_name') %}
+            <div class="well">Informasjon om denne aktøren vises ikke fordi aktøren har ikke samtykket til visning, eller er ikke registrert i Brønnøysundregistrene.</div>
+        {% else %}
+        <div class="well">{{organisation.get("description", "")}}</div>
+        <div class="row-fluid">
+            <div class="span6">
+                <div class="summary-section">
+                    <p class="summary-section-title">Informasjon fra Brønnøysundreg</p>
+
+                    <dl class="dl-horizontal">
+                        <dt>Organisasjonsnummer</dt>
+                        <dd>{{organisation.get("org_number", "<br>")|safe}}</dd>
+
+                        <dt>Organisasjonsform</dt>
+                        <dd>{{organisation.get("org_form", "<br>")|safe}}</dd>
+
+                        {% if organisation.get("brreg_activity_code", None) %}
+                            <dt>Kategori(er) </dt>
+                            <dd>
+                                <ul class="unstyled">
+                                    {% for code in organisation.get("brreg_activity_code", []) %}
+                                        <li>{{ code.get("description") }} ({{ code.get("code") }} )</li>
+                                    {% endfor %}
+                                </ul>
+                            </dd>
+                        {% endif %}
+
+                        <dt>Telefon</dt>
+                        <dd>{{organisation.get("phone_number", "<br>")|safe}}</dd>
+
+                        <dt>Telefaks</dt>
+                        <dd>{{organisation.get("telefax_number", "<br>")|safe}}</dd>
+
+
+
+                        {% if organisation.get("account_number", None) %}
+                        <dt>Kontonummer</dt>
+                        <dd>{{organisation.get("account_number", "")}}</dd>
+                        {% endif %}
+
+                    </dl>
+                </div>
+
+                <div class="summary-section ">
+                    <p class="summary-section-title">Lokal informasjon om aktøren</p>
+                    <dl class="dl-horizontal">
+                        <dt>Medlemmer</dt>
+                        <dd>{{organisation.get("num_members", "<br>")|safe}}</dd>
+
+                        <dt>Medlemmer under 20 år</dt>
+                        <dd>{{organisation.get("num_members_b20", "<br>")|safe}}</dd>
+
+                        {% if organisation.get("brreg_activity_code", None) %}
+                            {% if organisation.get("flod_activity_type", None) %}
+                                <dt>Type aktivitet </dt>
+                                <dd>
+                                    <ul class="unstyled">
+                                        {% for code in organisation.get("flod_activity_type", []) %}
+                                            <li>{{ code.get("name") }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </dd>
+                            {% endif %}
+                        {% endif %}
+
+                        <dt>Rekrutteringsområde</dt>
+                        <dd>{{organisation.get("recruitment_area", "-")}}</dd>
+
+                    </dl>
+
+                    <dl class="dl-horizontal">
+                        {% if user_mode == 'admin' %}
+                            <dt class="white-space-normal">Relevant for Trondheim Kulturnettverk</dt>
+                            <dd>{{ "Ja" if organisation.get("relevant_tkn", False) else "Nei"}} </dd>
+                        {% endif %}
+                    </dl>
+                    <dl class="dl-horizontal">
+
+                        {% if organisation.get("registered_tkn", None) !=None %}
+                            <dt class="white-space-normal">Medlem i Trondheim Kulturnettverk</dt>
+                            <dd>{{ "Ja" if organisation.get("registered_tkn", False) else "Nei"}} </dd>
+                        {% endif %}
+                    </dl>
+
+                </div>
+            </div>
+            <div class="span6">
+                {% if organisation.get("email_address", None) or organisation.get("local_email_address", None) or organisation.get("url", None) %}
+                    <div class="summary-section nopadding">
+                        <dl class="dl-horizontal">
+                        {% if organisation.get("email_address", None) %}
+                            <dt>E-post</dt>
+                            <dd>
+                                <a href='mailto:{{organisation.get("email_address", "")}}'>{{organisation.get("email_address", "")}}</a>
+                            </dd>
+                        {% endif %}
+
+                        {% if organisation.get("local_email_address", None) %}
+                            <dt>E-post 2</dt>
+                            <dd>
+                                <a href='mailto:{{organisation.get("local_email_address", "")}}'>{{organisation.get("local_email_address", "")}}</a>
+                            </dd>
+                        {% endif %}
+
+                        <dt>Internettadresse</dt>
+                        <dd>
+                            {% if organisation.get("url", None) %}
+                                <a href='http://{{organisation.get("url", "")}}'>{{organisation.get("url", "")}}</a>
+                            {% else %}
+                                <br>
+                            {% endif %}
+                        </dd>
+                        </dl>
+                    </div>
+                {% endif %}
+
+                {% if organisation.get("tilholdssted_address", None) or organisation.get("area", None) %}
+                    <div class="summary-section padding-onlytop">
+                        <p class="summary-section-title">Primært tilholdssted</p>
+                        <dl class="dl-horizontal">
+                            {% if organisation.get("tilholdssted_address", None) %}
+                            <dt>Adresse</dt>
+                            <dd>
+                                <address class="margin-small">
+                                    {{organisation.get("tilholdssted_address").get("address_line", "")}}<br>
+                                    {{organisation.get("tilholdssted_address").get("postal_code", "")}}
+                                    {{organisation.get("tilholdssted_address").get("postal_city", "")}}
+                                </address>
+                            </dd>
+                            {% endif %}
+
+                            {% if organisation.get("area", None) %}
+                            <dt>Bydel</dt>
+                            <dd>{{organisation.get("area", "-")}}</dd>
+                            {% endif %}
+                        </dl>
+                    </div>
+                {% endif %}
+
+                {% if organisation.get("postal_address", None) %}
+                    <div class="summary-section padding-onlytop">
+                        <p class="summary-section-title">Postadresse</p>
+                        <dl class="dl-horizontal">
+                            <dt>Adresse</dt>
+                            <dd>
+                                <address class="margin-small">
+                                    {{organisation.get("postal_address").get("address_line", "")}}<br>
+                                    {{organisation.get("postal_address").get("postal_code", "")}}
+                                    {{organisation.get("postal_address").get("postal_city", "")}}
+                                </address>
+                            </dd>
+                        </dl>
+                    </div>
+                {% endif %}
+
+                {% if organisation.get("business_address", None) %}
+                    <div class="summary-section padding-onlytop">
+                        <p class="summary-section-title">Forretningsadresse</p>
+                        <dl class="dl-horizontal">
+                            <dt>Adresse</dt>
+                            <dd>
+                                <address class="margin-small">
+                                    {{organisation.get("business_address").get("address_line", "")}}<br>
+                                    {{organisation.get("business_address").get("postal_code", "")}}
+                                    {{organisation.get("business_address").get("postal_city", "")}}
+                                </address>
+                            </dd>
+                        </dl>
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+        {% endif %}
+{% endblock %}

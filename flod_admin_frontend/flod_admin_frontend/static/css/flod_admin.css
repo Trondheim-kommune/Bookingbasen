@@ -1,0 +1,89 @@
+@font-face {
+    font-family: "daxregular";
+    src: url('../fonts/dax-regular.eot?') format('eot'), url('../fonts/dax-regular.woff') format('woff'), url('../fonts/dax-regular.ttf') format('truetype');
+}
+
+/*register org form*/
+span.required {
+    color: red;
+}
+
+/*header*/
+hr.navbar-separator {
+    margin: 0;
+}
+
+.flod-navbar .nav {
+    margin-bottom: 0;
+}
+
+.navbar-inverse .navbar-inner {
+    background-color: #0066aa;
+
+    background-image: none;
+    background-image: none;
+    background-image: none;
+    background-image: none;
+    background-image: none;
+    background-repeat: repeat-x;
+    border-color: #0066aa;
+    filter: none;
+}
+
+.navbar .brand {
+    color: white;
+    font-size: 17px;
+    font-family: "daxregular", helvetica;
+    letter-spacing: 2px;
+
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: #0066aa;
+}
+
+.navbar .input-append {
+    margin-bottom: 0;
+}
+
+.navbar .typeahead {
+    margin-top: 0;
+}
+
+/*navbar customization*/
+.flod-navbar a {
+    color: #333333;
+}
+
+.flod-navbar .nav-pills > li > span {
+    border-radius: 5px 5px 5px 5px;
+    margin-bottom: 2px;
+    margin-top: 2px;
+    padding-bottom: 8px;
+    padding-top: 8px;
+}
+
+.flod-navbar .nav-pills > li > span {
+    line-height: 14px;
+    margin-right: 2px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.flod-navbar .nav > li > span {
+    display: block;
+}
+
+.flod-navbar .nav-pills > .active > span {
+    background-color: #EEE;
+}
+
+legend.small {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    line-height: 25px;
+}
+
+table.noborders td {
+    border: 0px !important;
+}

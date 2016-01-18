@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://rep.trondheim.kommune.no/Felles/Xml/Schema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns="http://rep.trondheim.kommune.no/Felles/Xml/Schema">
+	<xs:include schemaLocation="http://testsoa.tk.infostorm.no:7002/T10121_ArkivSak/ProxyServices/ArkivSak?SCHEMA%2FT10121_ArkivSak%2FResources%2FFeSak_Sak"/>
+    <xs:include schemaLocation="http://testsoa.tk.infostorm.no:7002/T10121_ArkivSak/ProxyServices/ArkivSak?SCHEMA%2FT10121_ArkivSak%2FResources%2FFe_Header"/>
+	<xs:element name="ArkivSakRequest" type="ns:ArkivSakRequestType"/>
+	<xs:complexType name="ArkivSakRequestType">
+		<xs:sequence>
+			<xs:element name="header" type="ns:HeaderType"/>
+			<xs:element name="operasjon" type="xs:string"/>
+			<xs:element name="sak" type="ns:SakType"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

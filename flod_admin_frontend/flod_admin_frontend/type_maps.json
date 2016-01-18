@@ -1,0 +1,67 @@
+{
+  "accessibility": {
+    "elevator": "Heis",
+    "marking_for_visually_impaired": "Merking for svaksynte",
+    "induction_loop": "Teleslynge",
+    "available_by_wheelchair": "Tilrettelegging for rullestolbrukere",
+    "wheelchair_wc": "Toalett for rullestolbrukere"
+  },
+  "equipment": {
+    "badminton_net": "Badminton-nett",
+    "basketball_hoop": "Basketballkurver",
+    "conference_equipment": "Konferanseutstyr",
+    "floor_ball_boards": "Innebandyvant",
+    "handball_goals": "Håndballmål",
+    "lighting_equipment": "Lysanlegg",
+    "microphone": "Mikrofoner",
+    "piano": "Piano",
+    "projector": "Projektor",
+    "scene": "Scene",
+    "small_football_goals": "Små fotballmål",
+    "sound_equipment": "Lydanlegg",
+    "three_phase_power": "3-fase strøm",
+    "track_equipment": "Friidrettsutstyr",
+    "volleyball_net": "Volleyball-nett",
+    "sing": "Sanganlegg",
+    "standing_microphone": "Mikrofoner med stativ",
+    "percussion": "Slagverk",
+    "guitar_amp": "Gitarforsterker",
+    "bass_amp": "Bassforsterker",
+    "el_piano": "Keyboard eller el-piano",
+    "turnutstyr": "Turnutstyr",
+    "tennis": "Tennis",
+    "bordtennis": "Bordtennis"
+  },
+  "amenities": {
+    "climbing_wall": "Klatrevegg",
+    "kitchen": "Kjøkken",
+    "nett": "Trådløs nett",
+    "running_track": "Løpebane",
+    "shower": "Dusj",
+    "sportsdekke": "Sportsdekke",
+    "stand": "Tribune",
+    "storage": "Lager",
+    "wardrobe": "Garderobe",
+    "wooden_floor": "Parkettgulv"
+  },
+  "suitability": {
+    "choir": "Kor",
+    "course": "Kurs, undervisning",
+    "dance": "Dans",
+    "drama": "Konsert, forestilling, drama",
+    "film": "Filmvisning",
+    "hobby": "Formingsaktiviteter, hobby",
+    "meeting": "Møte, konferanse, seminar",
+    "orchestra": "Korps, orkester",
+    "show": "Utstilling",
+    "sport": "Idrett, trening",
+    "band": "Bandøving"
+  },
+  "facilitators": {
+    "sound_technician": "Lydtekniker",
+    "light_technician": "Lystekniker",
+    "supervising_guard": "Tilsynsvakt",
+    "external_guard": "Ekstern vakt",
+    "extra_cleaning": "Ekstra renhold"
+  }
+}

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+
+{% block js %}
+    {{ super() }}
+    {% assets "adm_leieform_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    <script type="text/javascript">
+        (function() {
+            "use strict";
+            var settings = new Flod.Settings();
+            settings.fetch({
+                'success' : function(){
+                    new Flod.LeieformSettingsView({"model": settings, "el": $("#leieform")}).render()
+                }
+            });
+        }());
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="well">
+        <div class="row-fluid">
+            <div class="span6">
+                <legend>Leieform</legend>
+
+                <div id="leieform"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block templates %}
+    {{ super() }}
+    {% include "alert.html" %}
+
+    <script type="text/template" id="leieform_template">
+        <form id="rental_types">
+            <div id="error_div"></div>
+            <label class="checkbox" id="fast_laan">
+                <input type="checkbox" id="repeating_booking_allowed" <% if (repeating_booking_allowed) { %>checked<% } %>>
+                Fast lån
+                <span class="help-block">Aktiver / deaktiver mulighet for å søke om fast lån av lokaler.</span>
+            </label>
+
+            <div class="help-block form-inline checkbox_paragraph">
+                <label class="control-label" for="deadline_date">Sett dato for søknadsfrist for fast lån:</label>
+
+                <div id="deadline_date_div" class="input-append date" data-date="" data-date-format="dd.mm.yyyy" >
+                    <input id="deadline_date" class="input-small" readonly type="text">
+                    <span class="add-on"><i class="icon-calendar"></i></span>
+                </div>
+            </div>
+
+            <div class="help-block form-inline checkbox_paragraph">
+                <label class="control-label" for="repeating_enddate">Sett sluttdato for mulighet for å søke om fast lån:</label>
+
+                <div id="repeating_enddate_div" class="input-append date" data-date="" data-date-format="dd.mm.yyyy" >
+                    <input id="repeating_enddate" class="input-small" readonly type="text">
+                    <span class="add-on"><i class="icon-calendar"></i></span>
+                </div>
+            </div>
+
+            <label class="checkbox">
+                <input type="checkbox" id="single_booking_allowed" <% if (single_booking_allowed) { %>checked<% } %>>
+                Engangslån
+                <span class="help-block">Aktiver / deaktiver mulighet for å søke om engangslån av lokaler.</span>
+            </label>
+
+            <div class="help-block form-inline checkbox_paragraph">
+                <label class="control-label" for="single_enddate">Sett sluttdato for mulighet for å søke om engangslån:</label>
+
+                <div id="single_enddate_div" class="input-append date" data-date="" data-date-format="dd.mm.yyyy" >
+                    <input id="single_enddate" class="input-small" readonly type="text">
+                    <span class="add-on"><i class="icon-calendar"></i></span>
+                </div>
+            </div>
+
+            <label class="checkbox">
+                <input type="checkbox" id="strotime_booking_allowed" <% if (strotime_booking_allowed) { %>checked<% } %>>Strøtimer
+                <span class="help-block">Aktiver / deaktiver mulighet til å booke strøtimer</span>
+            </label>
+
+            <button id="save_button" type="submit" class="btn btn-primary">Lagre</button>
+        </form>
+
+    </script>
+
+
+{% endblock %}

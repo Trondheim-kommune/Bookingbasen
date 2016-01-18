@@ -1,0 +1,7 @@
+*.pyc
+flod_common.egg-info
+venv
+project*.sh
+nosetests.xml
+.idea
+env.sh

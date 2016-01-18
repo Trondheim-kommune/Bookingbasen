@@ -1,0 +1,12 @@
+<script type="text/template" id="strotime_type_selector_template">
+    <form id="selector" class="form-inline">
+        <label class="control-label" for="facility_typeSelect">Type lokale</label>
+    </form>
+</script>
+
+<script type="text/template" id="strotime_booking_template">
+    <h4><%= model.name %></h4>
+    <p><%= model.capacity %> pers</p>
+    <p>Dato: <%= time.format("DD.MM.YYYY") %></p>
+    <!--<p>Fra: <%= time.format("HH.mm") %>, til: <%= moment(endTime).format("HH.mm") %></p>-->
+</script>

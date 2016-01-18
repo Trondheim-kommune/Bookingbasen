@@ -1,0 +1,53 @@
+<script type="text/tmpl" id="facility_template">        
+    <form >
+
+        <div class="form-actions">
+            <div class="btn-toolbar pull-right">
+                <div class="btn-group">
+                    <button id="published" type="button" class="btn <% if (is_published) { %>btn<% } else { %>btn-warning<% } %> <% if (is_published) { %>active <% }%>" data-toggle="button"><% if (is_published) { %>Avpubliser<% } else { %>Publiser<% } %></button>
+                </div>
+                <div class="btn-group">
+                    <button id="delete" href="#deleteModal" role="button" data-toggle="modal" type="button" class="btn btn-danger">Fjern lokalet</button>
+                </div>
+            </div>
+            <div class="btn-toolbar pull-left">
+                <div class="btn-group">
+                    <button id="save" type="button" class="btn btn-primary">Lagre</button>
+                </div>
+            </div>
+        </div>
+
+        <fieldset class="margined">
+            {% include "facility/facility_name_address.html" %}
+        </fieldset>
+        <fieldset>
+            {% include "facility/facility_tilhorighet.html" %}
+        </fieldset>
+        <fieldset>
+            {% include "facility/facility_contact.html" %}
+        </fieldset>
+        <fieldset>
+            {% include "facility/facility_checkboxes.html" %}
+        </fieldset>
+        <fieldset>
+            {% include "facility/facility_accessibility.html" %}
+        </fieldset>
+
+        <div class="form-actions">
+            <button id="save" type="button" class="btn btn-primary">Lagre</button>            
+        </div>
+    </form>
+    <div id="deleteModal" class="modal hide">
+        <div class="modal-header">
+            <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
+             <h3>Fjern lokalet</h3>
+        </div>
+        <div class="modal-body">
+            <p>Er du sikker på at du vil fjerne lokalet?</p>
+        </div>
+        <div class="modal-footer">
+          <a href="#" id="btnYes" class="btn danger">Ja</a>
+          <a href="#" data-dismiss="modal" aria-hidden="true" class="btn secondary">Nei</a>
+        </div>
+    </div>
+</script>

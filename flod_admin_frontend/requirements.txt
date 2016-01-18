@@ -1,0 +1,15 @@
+-e git+https://github.com/Trondheim-kommune/python-saml-adfs.git@master#egg=python-saml-adfs
+cssmin==0.2.0
+Flask-Assets==0.9
+Flask-Login==0.2.10
+Flask==0.10.1
+itsdangerous==0.24
+Jinja2==2.7.2
+jsmin==2.0.9
+MarkupSafe==0.21
+mock==1.0.1
+requests==2.2.1
+responses==0.2.0
+six==1.6.1
+webassets==0.9
+Werkzeug==0.9.4

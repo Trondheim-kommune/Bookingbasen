@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Finn aktør - {{app_name}}{% endblock %}
+
+{% block js %}
+    {{ super() }}
+    {% if user_mode == 'admin' %}
+    {% assets "organisation_email" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    {% assets "organisation_export" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    <script type="text/javascript">
+        (function() {
+            "use strict";
+            Flod.createOrganisationEmailView({"emails": {{emails | safe}}}).render();
+            Flod.createExportReportView().render();
+
+        })();
+    </script>
+    {% endif %}
+
+{% endblock %}
+{% block content %}
+{{ super() }}
+    <script type="text/template" id="contact_template">
+
+</script>
+
+    {% if user_mode == 'admin' %}
+    <script type="text/template" id="modal_template">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel"><%= title %></h3>
+        </div>
+        <div class="modal-body">
+            <p>Adresseliste:</p>
+            <textarea rows="10" style="width: 100%;" readonly><%= emails.join('\n') %></textarea>
+            <p>Kopier listen over (Ctrl+C) og lim inn i &laquo;Til&raquo;-feltet i din epostklient.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-inverse"><%= btn_cancel_txt %></button>
+        </div>
+    </script>
+    {% endif %}
+<div class="row-fluid spaced">
+    <div class="span10">
+
+
+        <h1 class="small">Finn aktør</h1>
+
+        <form class="form-horizontal org_search">
+            <div class="control-group">
+                <label class="control-label" for="name">Navn</label>
+                <div class="controls">
+                    <input type="text" id="name" name="name" placeholder="Navn" value="{{ params.name }}">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="brreg_activity_code">Kategori</label>
+                <div class="controls">
+                    <select id="brreg_activity_code" name="brreg_activity_code" placeholder="Kategori">
+                        <option value=''></option>
+                        {% for item in brreg_activity_codes %}
+                        <option  value="{{ item.code }}" {% if params.brreg_activity_code and item.code == params.brreg_activity_code %} selected {% endif %}>{{ item.description }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="flod_activity_type">Aktivitet</label>
+                <div class="controls">
+                    <select id="flod_activity_type" name="flod_activity_type" placeholder="Aktivitet">
+                        <option value=''></option>
+                        {% for item in flod_activity_types %}
+                        <option  value="{{ item.id }}" {% if params.flod_activity_type and item.id == params.flod_activity_type|int %} selected {% endif %} >{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="area">Bydel</label>
+                <div class="controls">
+                    <select id="area" name="area" placeholder="Bydel">
+                        <option value=''></option>
+                        {% for item in districts %}
+                        <option  value="{{ item.id }}" {% if params.area and item.id == params.area|int %} selected {% endif %} >{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn">Søk</button>
+                </div>
+            </div>
+        </form>
+
+        {% if organisations %}
+        <div class="span4">
+        {% if user_mode == 'admin' %}
+            <div id="emails">
+                <p><button class="btn">Kontakt disse aktørene</button></p>
+            </div>
+            {% endif %}
+            <ul class="nav nav-tabs nav-stacked">
+                {% for organisation in organisations %}
+                <li>
+                    <a href="organisations/{{ organisation.id }}"><i class="icon-chevron-right"></i>{{ organisation.name }}</a>
+                </li>
+                {% endfor %}
+
+            </ul>
+        </div>
+        <p>
+        {% elif params %}
+        Ingen aktører funnet.
+        {% else %}
+        Spesifiser søkeparametere.
+            {% if user_mode == 'admin' %}
+                <div id="export">
+                    <br />
+                    <p><button class="btn">Eksporter alle aktører</button></p>
+                </div>
+            {% endif %}
+        {% endif %}
+        </p>
+    </div>
+</div>
+{% endblock %}

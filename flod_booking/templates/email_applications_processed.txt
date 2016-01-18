@@ -1,0 +1,30 @@
+Hei
+
+Søknaden (søkt {{ application_time }}) om lån av lokalet, {{ resource_name }}, er {{ application_status }}.
+{% if org_name %}
+Søknaden er på vegne av:
+{{ org_name }}
+
+{% endif %}{% if changed_time or application_status == 'avvist'  %}Du søkte om følgende tid:
+
+    Periode: {{requested_period[0]}} - {{requested_period[1]}}{% for slot in requested_slots %}
+    {{ slot }}{% endfor %}
+
+{% endif %}{% if application_status == 'godkjent' %}Følgende tider er tildelt:
+
+    Periode: {{period[0]}} - {{period[1]}}{% for slot in slots %}
+    {{ slot }}{% endfor %}
+
+{% if resource_name != requested_resource_name %}Merk at følgende lokale ble tildelt i stedet for {{ requested_resource_name }}:
+{{ resource_name }}
+
+{% endif %}{% if changed_period %}Merk at perioden er endret i forhold til din søknad.
+
+{% endif %}{% if resource_documents %}Lokalets dokumenter:
+
+{% for document in resource_documents %}{{ document.title }} - https://booking.trondheim.kommune.no{{ document.url }}
+
+{% endfor %}{% endif %}{% endif %}{% if message %}{% if application_status == 'godkjent' %}Viktig informasjon til låntaker:{% else %}Begrunnelse for avslag:{% endif %}
+{{ message }}
+
+{% endif %}Dette er en automatisk generert e-post fra Bookingbasen, og kan derfor ikke besvares.

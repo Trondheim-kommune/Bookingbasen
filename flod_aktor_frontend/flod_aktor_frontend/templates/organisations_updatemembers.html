@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+{{ super() }}
+    <div class="row-fluid">
+    <div class="span10">
+<h1 class="small">Oppdatere medlemsdata</h1>
+
+{% if messages %}
+<div>
+    {% for message in messages %}
+    <div class="alert alert-{{ message.status }}">
+        {% if message.status == "error" %}
+            <h4>Feil</h4>
+        {% else %}
+            <h4>Suksess</h4>
+        {% endif %}
+
+        {{ message.message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="well">
+    <form class="form-horizontal" method="post" enctype="multipart/form-data">
+        <legend>Medlemsdata (XML)</legend>
+        <div class="help-inline">Her kan du årlig oppdatere medlemsdata for registrerte organisasjoner. Du kan oppdatere så ofte du ønsker uten at dette skaper problemer. En XML-fil må lastes ned fra SportsAdmin på <abbr title="Norges Idrettsforbund">NIF</abbr> sine sider, og videre lastes opp her. Du vil få en kort rapport om hva som ble oppdatert og eventuelle feil.</div>
+        <div class="control-group push--top" id="document-group">
+            <label class="control-label">Dokument</label>
+            <div class="controls">
+                <input type="file" name="document" class="input-xlarge">
+                <div class="help-block">(Max filstørrelse 20 MB)</div>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <input type="submit" class="btn" id="save-document" value="Last opp" />
+            </div>
+        </div>
+    </form>
+</div>
+{% if updated_organisations %}
+<h1 class="small">Rapport</h1>
+<div>
+
+    <ul class="unstyled">
+        {% for updated_organisation in updated_organisations %}
+        <li class="success text-success">
+            {{ updated_organisation.name }} ({{ updated_organisation.org_number }}) ble oppdatert med {{ updated_organisation.num_members }} medlemmer og {{ updated_organisation.num_members_b20 }} U20-medlemmer
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+</div>
+    </div>
+{% endblock %}

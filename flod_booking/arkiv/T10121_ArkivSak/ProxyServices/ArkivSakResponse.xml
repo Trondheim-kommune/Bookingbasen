@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2005 rel. 3 U (http://www.altova.com) by toso (ErgoGroup) --><xs:schema targetNamespace="http://rep.trondheim.kommune.no/Felles/Xml/Schema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns="http://rep.trondheim.kommune.no/Felles/Xml/Schema">
+	<xs:include schemaLocation="http://testsoa.tk.infostorm.no:7002/T10121_ArkivSak/ProxyServices/ArkivSak?SCHEMA%2FT10121_ArkivSak%2FResources%2FFeSak_Sak"/>
+	<xs:element name="ArkivSakResponse" type="ns:ArkivSakResponseType"/>
+	<xs:complexType name="ArkivSakResponseType">
+		<xs:sequence>
+			<xs:element name="status" type="xs:string"/>
+			<xs:element name="melding" type="xs:string" minOccurs="0"/>
+			<xs:element name="returSaksnr" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

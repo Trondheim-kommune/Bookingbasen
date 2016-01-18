@@ -1,0 +1,14 @@
+<div class="well">
+    <legend>Kontaktperson</legend>
+    <span class="help-block">Dersom enheten ønsker å oppgi en kontaktperson for lokalet kan dette oppgis her.</span>
+    <div class="row-fluid">
+        <div class="span6">
+            <label>Navn </label>
+            <input class="span12" type="text" id="contact_info_name" name="contact_person_name" value="<% if (contact_person) { print(contact_person.name) } %>">
+        </div>
+        <div class="span6">
+            <label>Mobilnummer </label>
+            <input class="span10" type="text" id="contact_info_phone_number" name="contact_person_phone_number" value="<% if (contact_person) { print(contact_person.phone_number) } %>">
+        </div>
+    </div>
+</div>

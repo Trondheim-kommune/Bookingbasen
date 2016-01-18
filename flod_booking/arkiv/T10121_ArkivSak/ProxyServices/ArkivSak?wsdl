@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WL5G3N0:definitions targetNamespace="http://rep.trondheim.kommune.no/Felles/Xml/Wsdl" xmlns:WL5G3N0="http://schemas.xmlsoap.org/wsdl/" xmlns:WL5G3N1="http://rep.trondheim.kommune.no/Felles/Xml/Schema" xmlns:WL5G3N2="http://rep.trondheim.kommune.no/Felles/Xml/Wsdl" xmlns:WL5G3N3="http://schemas.xmlsoap.org/wsdl/soap/">
+  <WL5G3N0:types>
+    <xs:schema targetNamespace="http://rep.trondheim.kommune.no/Felles/Xml/Schema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:ns="http://rep.trondheim.kommune.no/Felles/Xml/Schema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://rep.trondheim.kommune.no/Felles/Xml/Wsdl" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <xs:include schemaLocation="http://testsoa.tk.infostorm.no:7002/T10121_ArkivSak/ProxyServices/ArkivSak?SCHEMA%2FT10121_ArkivSak%2FResources%2FFeSak_ArkivSakRequest"/>
+      <xs:include schemaLocation="http://testsoa.tk.infostorm.no:7002/T10121_ArkivSak/ProxyServices/ArkivSak?SCHEMA%2FT10121_ArkivSak%2FResources%2FFeSak_ArkivSakResponse"/>
+    </xs:schema>
+  </WL5G3N0:types>
+  <WL5G3N0:message name="T10121_ArkivSakIn">
+    <WL5G3N0:part element="WL5G3N1:ArkivSakRequest" name="body"/>
+  </WL5G3N0:message>
+  <WL5G3N0:message name="T10121_ArkivSakOut">
+    <WL5G3N0:part element="WL5G3N1:ArkivSakResponse" name="body"/>
+  </WL5G3N0:message>
+  <WL5G3N0:portType name="T10121_ArkivSakSoapPortType">
+    <WL5G3N0:operation name="T10121_ArkivSak">
+      <WL5G3N0:input message="WL5G3N2:T10121_ArkivSakIn"/>
+      <WL5G3N0:output message="WL5G3N2:T10121_ArkivSakOut"/>
+    </WL5G3N0:operation>
+  </WL5G3N0:portType>
+  <WL5G3N0:binding name="T10121_ArkivSakSoapBinding" type="WL5G3N2:T10121_ArkivSakSoapPortType">
+    <WL5G3N3:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <WL5G3N0:operation name="T10121_ArkivSak">
+      <WL5G3N3:operation soapAction="http://rep.trondheim.kommune.no/T10121_ArkivSak#T10121_ArkivSak"/>
+      <WL5G3N0:input>
+        <WL5G3N3:body use="literal"/>
+      </WL5G3N0:input>
+      <WL5G3N0:output>
+        <WL5G3N3:body use="literal"/>
+      </WL5G3N0:output>
+    </WL5G3N0:operation>
+  </WL5G3N0:binding>
+  <WL5G3N0:service name="T10121_ArkivSak">
+    <WL5G3N0:port binding="WL5G3N2:T10121_ArkivSakSoapBinding" name="T10121_ArkivSakSoapPort">
+      <WL5G3N3:address location="http://testsoa.tk.infostorm.no:7002/T10121_ArkivSak/ProxyServices/ArkivSak"/>
+    </WL5G3N0:port>
+  </WL5G3N0:service>
+</WL5G3N0:definitions>

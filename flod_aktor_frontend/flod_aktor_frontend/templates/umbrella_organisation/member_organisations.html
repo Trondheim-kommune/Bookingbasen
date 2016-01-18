@@ -1,0 +1,71 @@
+<div class="row">
+    <div id="messages" class="span12">
+        <!-- Show success and error messages. -->
+    </div>
+</div>
+
+<div class="row">
+    <div class="span4">
+        <h4>Søk</h4>
+    </div>
+    <div class="span4">
+        <h4>Tilgjengelige organisasjoner</h4>
+    </div>
+    <div class="span4">
+        <h4>Medlemsorganisasjoner</h4>
+    </div>
+</div>
+
+<div class="row">
+    <div class="span4">
+        <form id="available_organisations_filter" class="form-horizontal org_search" onsubmit="return false">
+            <div class="control-group">
+                <label class="control-label" for="name">Navn</label>
+                <div class="controls">
+                    <input type="text" id="name" name="name" placeholder="Navn">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="brreg_activity_code">Kategori</label>
+                <div class="controls">
+                    <select id="brreg_activity_code" name="brreg_activity_code" placeholder="Kategori">
+                        <option value=''></option>
+                        {% for item in brreg_activity_codes %}
+                        <option value="{{ item.code }}">{{ item.description }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="flod_activity_type">Aktivitet</label>
+                <div class="controls">
+                    <select id="flod_activity_type" name="flod_activity_type" placeholder="Aktivitet">
+                        <option value=''></option>
+                        {% for item in flod_activity_types %}
+                        <option value="{{ item.id }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <button id="searchButton" type="submit" class="btn">Søk</button>
+                </div>
+            </div>  
+        </form>
+    </div>
+    <div id="available-organisations-list" class="span4"></div>
+    <div id="member-organisations-list" class="span4"></div>
+</div>
+
+<script type="text/tmpl" id="umbrella-organisations-template">
+<ul id="umbrella-organisations" class="nav nav-tabs nav-stacked"></ul>
+</script>
+
+<script type="text/tmpl" id="umbrella-organisation-template">
+<a id="<%= organisation.get('id') %>"><i class="icon-chevron-right"></i><%= organisation.get('name') %></a>
+</script>
+
+<script type="text/tmpl" id="umbrella-member-organisation-template">
+<a id="<%= organisation.get('organisation_id') %>"><%= organisation.get('organisation').name %><i class="icon-remove-sign pull-right"></i></a>
+</script>

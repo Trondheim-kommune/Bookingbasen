@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+
+{% block js %}
+{{ super() }}
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="well span8">
+    <form class="form-horizontal" action="" method="post">
+      <div class="control-group">
+        <label class="control-label" for="inputIdent">Brukernavn TK-nett
+          <span class="required">*</span>
+        </label>
+        <div class="controls">
+          <input type="text" id="inputIdent" name="ident" placeholder="AAGE">
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="inputName">Navn
+          <span class="required">*</span>
+        </label>
+        <div class="controls">
+          <input type="text" id="inputName" name="name" placeholder="Åge Aleksandersen">
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn btn-primary">Opprett ny bruker</button>
+        </div>
+      </div>
+    </form>
+    {% with messages = get_flashed_messages(with_categories=true, category_filter=["error", "success"]) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="row-fluid">
+            <div class="alert alert-{{ category }} span6">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              {{ message }}
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+{% endblock %}
+
+{% block templates %}
+{{ super() }}
+{% endblock %}

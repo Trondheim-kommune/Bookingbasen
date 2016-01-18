@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2005 rel. 3 U (http://www.altova.com) by toso (ErgoGroup) --><xs:schema targetNamespace="http://rep.trondheim.kommune.no/Felles/Xml/Schema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns="http://rep.trondheim.kommune.no/Felles/Xml/Schema">
+	<xs:element name="Header" type="ns:HeaderType"/>
+	<xs:complexType name="HeaderType">
+		<xs:sequence>
+			<xs:element name="Meldingstype" type="xs:string" minOccurs="0"/>
+			<xs:element name="MeldingsID" type="xs:string" minOccurs="0"/>
+			<xs:element name="Versjonsnr" type="xs:string" minOccurs="0"/>
+			<xs:element name="AvsenderSystemkode" type="xs:string" minOccurs="0"/>
+			<xs:element name="AvsenderOrganisasjon" type="xs:string" minOccurs="0"/>
+			<xs:element name="AvsenderReferanse" type="xs:string" minOccurs="0"/>
+			<xs:element name="BrukerID" type="xs:string" minOccurs="0"/>
+			<xs:element name="SikkerhetToken" type="xs:string" minOccurs="0"/>
+			<xs:element name="TidspunktAvsender" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="TidspunktInSOA" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="TidspunktUtSOA" type="xs:dateTime" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

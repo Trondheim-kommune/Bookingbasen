@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Lånesøknad - {{ app_name }}{% endblock %}
+
+{% block css %}
+    {{ super() }}
+
+    {% assets "calendar_css" %}
+        <link rel="stylesheet" type="text/css" media="all" href="{{ ASSET_URL }}"/>
+    {% endassets %}
+
+{% endblock %}
+
+{% block js %}
+    {{ super() }}
+
+    {% assets "calendar_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    {% assets "bookingpage_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    <script type="text/javascript">
+        (function () {
+            "use strict";
+
+            var organisations = {{ organisations | safe }};
+            var facility = new Backbone.Model({{facility | safe}});
+
+            var data = {
+                "resource": facility,
+                "organisations": organisations,
+                "facilitation_type_mappings": {{ type_mappings | safe }},
+                "facilitation_group_mappings": {
+                    'amenities': 'Fasiliteter',
+                    'equipment': 'Utstyr',
+                    'accessibility': 'Tilrettelegging',
+                    'suitability': 'Bruksområder',
+                    'facilitators': 'Ressurser'
+                }
+            };
+
+            new Flod.BookingRouter(data);
+            Backbone.history.start();
+
+        }());
+    </script>
+
+{% endblock %}
+
+{% block content %}
+    {{ super() }}
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="tabbable">
+                <ul id="booking_tabs" class="nav nav-tabs">
+                    <li><a id="repeating" href="#">Fast lån</a></li>
+                    <li><a id="single" href="#date/">Engangslån</a></li>
+                </ul>
+                <div class="tab-content">
+                    <h1 id="booking_header"></h1>
+
+                    <form id="booking_form">
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block templates %}
+    {{ super() }}
+    {% include "js_templates/modal_template.html" %}
+    {% include "js_templates/booking.html" %}
+    {% include "js_templates/alert.html" %}
+    {% include "js_templates/legend_template.html" %}
+{% endblock %}

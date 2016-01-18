@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+  {{ super() }}
+
+  <div class="span4">
+    <h2>Mine lokaler</h2>
+    <div class="well">
+      <a href="/resource" class="btn btn-primary">Registrer nytt lokale</a>
+    </div>
+    <ul class="nav nav-tabs nav-stacked">
+      {% for facility in facilities %}
+        <li><a href="resource/{{ facility.id }}">
+          <i class="icon-chevron-right"></i>
+          {{ facility.name }}
+          {% if facility.is_published == False %}
+            <span class="label label-warning">Ikke publisert</span>
+          {% endif %}
+        </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+{% endblock %}

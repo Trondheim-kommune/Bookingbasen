@@ -1,0 +1,48 @@
+{% extends "org_base.html" %}
+
+{% block js %}
+{{ super() }}
+{% assets "organisationpage_js" %}
+<script type="text/javascript" src="{{ ASSET_URL }}"></script>
+{% endassets %}
+
+<script type="text/javascript">
+    (function() {
+        var brreg_activity_codes = new Flod.BrregActivityCodes({{brreg_activity_codes | safe}});
+        var districts = {{districts | safe }};
+        var recruiting_districts = {{recruiting_districts | safe }};
+        var user_mode = '{{ user_mode }}';
+        var organisation = new Flod.Organisation({{organisation | safe}});
+
+        new Flod.OrganisationInfoFormView({
+            "el": this.$("#edit_org_form"),
+            "model": organisation,
+            "districts": districts,
+            "recruiting_districts": recruiting_districts,
+            "user_mode": user_mode,
+            "brreg_activity_codes": brreg_activity_codes
+        }).render();
+
+    }());
+</script>
+{% endblock %}
+
+{% block org_content %}
+{{ super() }}
+        <h1 class="small">Rediger aktør</h1>
+
+
+        <div class="row-fluid">
+                <div class="span12" id="edit_org_form">
+
+                </div>
+        </div>
+
+
+    {% endblock %}
+
+    {% block templates %}
+    {{ super() }}
+    {% include "js_templates/alert.html" %}
+    {% include "js_templates/register_org_templates.html" %}
+    {% endblock %}

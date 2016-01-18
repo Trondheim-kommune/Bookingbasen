@@ -1,0 +1,7 @@
+Hei {{ person_name }}
+
+Dette er en påminnelse for følgende strøtime registert på deg:
+Tidspunkt: {{ start_time }} - {{ end_time }}
+Lokale: {{ resource_name }}
+
+Dette er en automatisk generert e-post fra Bookingbasen, og kan derfor ikke besvares.

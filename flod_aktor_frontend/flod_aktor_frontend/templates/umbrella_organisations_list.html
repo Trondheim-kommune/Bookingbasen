@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+{{ super() }}
+<div class="row-fluid">
+<div class="span4">
+    <h2>Paraplyorganisasjoner</h2>
+    <div class="well">
+        <a href="umbrella_organisation" class="btn btn-primary">Ny paraplyorganisasjon</a>
+    </div>
+
+{% if umbrella_organisations %}
+    <ul class="nav nav-tabs nav-stacked">
+        {% for umbrella_organisation in umbrella_organisations %}
+        <li>
+            <a href="umbrella_organisation/{{ umbrella_organisation.id }}"><i class="icon-chevron-right"></i>{{ umbrella_organisation.name }}</a>
+        </li>
+        {% endfor %}
+
+    </ul>
+{% else %}
+    <p>Ingen paraplyorganisasjoner funnet.</p>
+{% endif %}
+</div>
+</div>
+{% endblock %}
+
