@@ -211,7 +211,8 @@ var Flod = window.Flod || {};
             _.each(arrangement.attributes, function (value, key) {
                 collisionSlot.set(key, value);
             });
-            collisionSlot.set('status', 'arrangement');
+
+            collisionSlot.set('status', arrangement.get("status"));
             collisionSlot.set(
                 'display_name',
                 arrangement.get('display_name') + '\nArrangement'

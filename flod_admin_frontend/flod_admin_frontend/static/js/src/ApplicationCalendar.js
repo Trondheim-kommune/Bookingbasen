@@ -226,22 +226,26 @@ var Flod = window.Flod || {};
             }, {}, this);
 
             var mappedSlots = slots.reduce(ns.mapSlots, {});
-            var combined = ns.concatSlots(mappedSlots, mappedRammetidSlots);
 
             // Show own slots with stripes in the calendar.
             var ownSlots = this.model.getSlots();
+            var self = this;
+
             _.each(ownSlots, function (slot) {
                 slot.set({
-                    status: slot.get('status') + ' own-slot'
+                    status: slot.get('status') + ' own-slot',
+                    is_arrangement: self.model.get("is_arrangement"),
+                    display_name: slot.getDisplayName()
                 });
             });
             var mappedOwnSlots = ownSlots.reduce(ns.mapSlots, {});
-            var combinedWithOwn = ns.findCollisions(ns.concatSlots(combined, mappedOwnSlots));
+            var combinedWithOwn = ns.findCollisions(ns.concatSlots(mappedSlots, mappedOwnSlots));
 
+            var combined = ns.concatSlots(combinedWithOwn, mappedRammetidSlots);
             var mappedBlocked = blocked.reduce(ns.mapSlots, {});
             // "chop off" unwanted parts from blocked time
             mappedBlocked = _.reduce(mappedBlocked, function (res, slots, day) {
-                var match = combinedWithOwn[day];
+                var match = combined[day];
                 if (match) { // If there are other slots for this day, check split
                     res[day] = _.flatten(_.map(slots, function (slot) {
                         return ns.calendar.splitSlot(slot, match);
@@ -261,30 +265,30 @@ var Flod = window.Flod || {};
                         row.addSlots(slots);
                     }
                 }, this);
-                _.each(ns.concatSlots(ns.findCollisions(combined), mappedBlocked), function (slots, date) {
-                    var colors = _.map(slots, function (slot) {
-                        var color = "gray";
-                        if (slot.get('status') === "Granted") {
-                            color = "#468847";
-                        }
-                        if (slot.get('status') === "collision") {
-                            color = "#F0AD4E";
-                        }
-                        if (slot.get('status') === "rammetid") {
-                            color = "#336699";
-                        }
-                        if (slot.get('status') === "Pending own-slot" ||
+                _.each(ns.concatSlots(combined, mappedBlocked), function (slots, date) {
+                        var colors = _.map(slots, function (slot) {
+                            var color = "gray";
+                            if (slot.get('status') === "Granted") {
+                                color = "#468847";
+                            }
+                            if (slot.get('status') === "collision") {
+                                color = "#F0AD4E";
+                            }
+                            if (slot.get('status') === "rammetid") {
+                                color = "#336699";
+                            }
+                            if (slot.get('status') === "Pending own-slot" ||
                                 slot.get('status') === "Processing own-slot") {
-                            color = "white";
-                        }
-                        return {
-                            "start_time": slot.get("start_time"),
-                            "end_time": slot.get("end_time"),
-                            "background_color": color
-                        };
-                    });
-                    this.calendar.getRowForDate(moment(date)).addColors(colors);
-                }, this);
+                                color = "white";
+                            }
+                            return {
+                                "start_time": slot.get("start_time"),
+                                "end_time": slot.get("end_time"),
+                                "background_color": color
+                            };
+                        });
+                        this.calendar.getRowForDate(moment(date)).addColors(colors);
+                    }, this);
             } else {
                 slots.each(function (slot) {
                     var status = (slot.get('status') === "Granted") ? "Granted" : 'other';
@@ -293,7 +297,7 @@ var Flod = window.Flod || {};
                         status: status
                     });
                 });
-                _.each(ns.concatSlots(combinedWithOwn, mappedBlocked), function (slots, date) {
+                _.each(ns.concatSlots(combined, mappedBlocked), function (slots, date) {
                     var row = this.calendar.getRowForDate(moment(date));
                     if (row) {
                         row.addSlots(slots);

@@ -48,6 +48,15 @@ class BaseValidator(object):
 
         return self
 
+    def validate_date_is_newer_than_year_1900(self, date_key_name, msg):
+        if self.data.get(date_key_name):
+            date = datetime.strptime(self.data.get(date_key_name), "%Y-%m-%d").date()
+
+            if date.year < 1900:
+                self.add_error(date_key_name, msg)
+
+        return self
+
     def validate_dates_are_ordered(self, date1_key_name, date2_key_name, msg):
         if self.data.get(date1_key_name) and not self.data.get(date2_key_name):
             self.errors[date2_key_name] = 'Sluttdato mangler'

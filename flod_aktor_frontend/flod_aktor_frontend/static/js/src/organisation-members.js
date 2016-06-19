@@ -114,7 +114,7 @@ var Flod = window.Flod || {};
         url: function () {
             return "/api/organisations/v1/persons/" + this.get("id");
         }
-    })
+    });
 
     var EditMemberView = Backbone.View.extend({
         template: $("#edit_member_template").html(),
@@ -413,7 +413,7 @@ var Flod = window.Flod || {};
         },
 
         addMember: function (user) {
-            user.save({"organisation": this.org_id}, {"success": this.saved, "error": this.error});
+            user.save({"organisation": this.org_id}, {"validate": false, "success": this.saved, "error": this.error});
         },
 
         saved: function (user) {

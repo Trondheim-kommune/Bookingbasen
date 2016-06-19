@@ -55,7 +55,7 @@ var Flod = window.Flod || {};
 
                 var name = slot.getLabel();
                 var subSlots = slot.get("slots");
-                if (slot.get('status') === 'arrangement') {
+                if (slot.get('is_arrangement') && slot.get("slots") && slot.get('is_arrangement') === true) {
                     name = "Overstyrer";
                     subSlots = _.reject(slot.get("slots"), function (slot) {
                         return slot.get('is_arrangement');
