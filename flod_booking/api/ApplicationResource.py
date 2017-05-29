@@ -1,75 +1,39 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 import json
 from base64 import b64encode
 
 import datetime
-from flask import current_app, request, render_template
-from flask.ext.restful import fields, marshal, abort
-from auth import is_idporten_user
-from isodate import parse_datetime, parse_date, parse_time
-from domain.models import Application, Resource, Organisation, Slot, RepeatingSlot, Person, FesakSak
-from BaseResource import ISO8601DateTime, get_resource_for_uri, get_resource_from_web, get_organisation_from_web, get_person_from_web
-from SingleApplicationResource import single_application_fields
-from RepeatingApplicationResource import repeating_application_fields
-from ResourceResource import resource_fields
-from common_fields import person_fields, organisation_fields
-from celery_tasks.email_tasks import send_email_task, send_email_with_csv_task
-from util.email import format_repeating_slot_for_email, format_slot_for_email
-from BaseApplicationResource import BaseApplicationResource
 from arkiv.arkivclient import ArkivDBClient, WSSak, WSAdressat, WSDokument, WSJournalpost
-from flod_common.session.utils import unsign_auth_token, verify_superuser_auth_token
-from flask.ext.bouncer import requires, ensure, GET, PUT, DELETE
-from SettingsResource import SettingsResource
-from repo import get_user, has_role
+from celery_tasks.email_tasks import send_email_task, send_email_with_csv_task
 from domain.erv import erv_person, erv_organisation
+from domain.models import Application, Resource, Organisation, Slot, RepeatingSlot, Person, FesakSak, StrotimeSlot
+from flask import current_app, request, render_template
+from flask.ext.bouncer import requires, ensure, GET, PUT, DELETE
+from flask.ext.restful import marshal, abort
+from flod_common.session.utils import unsign_auth_token, verify_superuser_auth_token
+from isodate import parse_datetime, parse_date, parse_time
+from repo import get_user, has_role
 from sqlalchemy import or_
+from util.email import format_application_status_for_email, format_slots_for_email
 
-generic_slot_fields = {
-    'id': fields.Integer,
-    'start_date': ISO8601DateTime,  # make optional
-    'end_date': ISO8601DateTime,  # make optional
-    'start_time': ISO8601DateTime,
-    'end_time': ISO8601DateTime,
-    'week_day': fields.Integer,  # make optional
-}
-
-application_fields = {
-    'id': fields.Integer,
-    'text': fields.String,
-    'facilitation': fields.String,
-    'person': fields.Nested(person_fields),
-    'organisation': fields.Nested(organisation_fields),
-    'resource': fields.Nested(resource_fields),
-    'requested_resource': fields.Nested(resource_fields),
-    'slots': fields.Nested(generic_slot_fields),
-    'status': fields.String,
-    'application_time': ISO8601DateTime,
-    'type': fields.String,
-    'is_arrangement': fields.Boolean,
-    'invoice_amount': fields.Integer,
-    'to_be_invoiced': fields.Boolean,
-    'amenities': fields.Raw,
-    'equipment': fields.Raw,
-    'accessibility': fields.Raw,
-    'suitability': fields.Raw,
-    'facilitators': fields.Raw,
-    'requested_amenities': fields.Raw,
-    'requested_equipment': fields.Raw,
-    'requested_accessibility': fields.Raw,
-    'requested_suitability': fields.Raw,
-    'requested_facilitators': fields.Raw,
-    'comment': fields.String,
-    'requested_slots': fields.Nested(generic_slot_fields),
-    'message': fields.String
-}
+from BaseApplicationResource import BaseApplicationResource
+from BaseResource import get_resource_for_uri, get_resource_from_web, get_organisation_from_web, get_person_from_web
+from SettingsResource import SettingsResource
+from application_fields import application_fields, single_application_fields, repeating_application_fields, strotimer_application_fields
+from auth import is_idporten_user
 
 
 def parse_single_slot(data, application):
     start_time = parse_datetime(data["start_time"])
     end_time = parse_datetime(data["end_time"])
     return Slot(start_time, end_time, application)
+
+
+def parse_strotime_slot(data, application):
+    start_time = parse_datetime(data["start_time"])
+    end_time = parse_datetime(data["end_time"])
+    return StrotimeSlot(start_time, end_time, application)
 
 
 def parse_repeating_slot(data, application):
@@ -87,24 +51,6 @@ def parse_repeating_slot(data, application):
         start_time,
         end_time
     )
-
-
-def format_application_status_for_email(application_status):
-    return {
-        'Granted': 'godkjent',
-        'Denied': 'avvist',
-        'Processing': 'under behandling'
-    }[application_status]
-
-
-def format_slots_for_email(slots, application_type):
-    formatted_slots = []
-    for slot in slots:
-        if application_type == "repeating":
-            formatted_slots.append(format_repeating_slot_for_email(slot))
-        else:
-            formatted_slots.append(format_slot_for_email(slot))
-    return formatted_slots
 
 
 def get_period_from_slots(slots, application_type):
@@ -162,7 +108,7 @@ def render_email_template(application, status=None):
     period = get_period_from_slots(application.slots, application_type)
 
     changed_period = not is_period_equal(period, requested_period)
-    changed_time = not is_slots_equal(slots, requested_slots) or changed_period;
+    changed_time = not is_slots_equal(slots, requested_slots) or changed_period
 
     resource_documents = resource_details.get("documents", [])
 
@@ -184,8 +130,40 @@ def render_email_template(application, status=None):
     return [email_address, org_email, org_local_email], message
 
 
+def render_email_template_avvist_strotime(application):
+    resource_details = get_resource_from_web(application.resource.uri)
+    org_email = None
+    org_local_email = None
+    if application.organisation is not None:
+        org_details = get_organisation_from_web(application.organisation.uri)
+        org_email = org_details.get('email_address', None)
+        org_local_email = org_details.get('local_email_address', None)
+
+    email_address = None
+    if application.person is not None:
+        person_details = get_person_from_web(application.person.uri)
+        email_address = person_details.get("email_address", None)
+
+    resource_name = resource_details['name']
+    application_time = application.application_time.strftime("%Y.%m.%d %H:%M")
+
+    application_type = application.get_type()
+    slots = format_slots_for_email(application.slots, application_type)
+
+    message = render_template("email_strotime_denied.txt",
+                              resource_name=resource_name,
+                              application_time=application_time,
+                              message=application.message,
+                              slots=slots)
+
+    return [email_address, org_email, org_local_email], message
+
+
 def send_email_application_processed(application):
-    email_address, message = render_email_template(application)
+    email_address, message = render_email_template_avvist_strotime(application) \
+        if application.type == 'strotime' and application.status == 'Denied' \
+        else render_email_template(application)
+
     if email_address and message is not None:
         send_email_task.delay(u'Søknad om lån av lokale',
                               u'booking@trondheim.kommune.no',
@@ -333,7 +311,7 @@ class ApplicationResource(BaseApplicationResource):
             # Include emails in response, if requested
             if "include_emails" in request.args:
                 _, granted_message = render_email_template(application, "Granted")
-                _, denied_message = render_email_template(application, "Denied")
+                _, denied_message = render_email_template_avvist_strotime(application) if application.get_type() == 'strotime' else render_email_template(application, "Denied")
                 application_dict['emails'] = dict(
                     granted_message=granted_message,
                     denied_message=denied_message
@@ -344,6 +322,15 @@ class ApplicationResource(BaseApplicationResource):
         applications = current_app.db_session.query(Application).order_by(Application.id)
 
         applications = filter_applications(applications, request.cookies)
+
+        if "start_date" in request.args and "end_date" in request.args:
+            start_date = datetime.datetime.combine(parse_date(request.args["start_date"]), datetime.datetime.min.time())
+            end_date = datetime.datetime.combine(parse_date(request.args["end_date"]), datetime.datetime.max.time())
+
+            applications = applications.filter(
+                start_date <= Application.application_time,
+                Application.application_time <= end_date
+            )
 
         if "resource_uri" in request.args:
             applications = applications.filter(
@@ -409,13 +396,18 @@ class ApplicationResource(BaseApplicationResource):
         user = get_user(request.cookies)
 
         # Check that the resource allows the type of application
-        if application.get_type() == "single" and not resource.single_booking_allowed:
+        if (application.get_type() == "single" and not resource.single_booking_allowed) \
+                and not (application.is_arrangement and has_role(user, 'flod_saksbehandlere')):
             abort(403, __error__=[u'Det er ikke mulig å behandle en søknad om engangslån fordi type utlån er deaktivert for lokalet'])
 
-        if application.get_type() == "repeating" and (not resource.repeating_booking_allowed or \
-                                                              (resource.repeating_booking_allowed and not settings["repeating_booking_allowed"] and not has_role(user,
-                                                                                                                                                                 'flod_saksbehandlere'))):
+        if application.get_type() == "repeating" and (not resource.repeating_booking_allowed
+                                                      or (
+                    resource.repeating_booking_allowed and not settings["repeating_booking_allowed"] and not has_role(user, 'flod_saksbehandlere'))):
             abort(403, __error__=[u'Det er ikke mulig å behandle en søknad om fast lån fordi type utlån er deaktivert for lokalet'])
+
+        if application.get_type() == "strotime" and (not resource.auto_approval_allowed
+                                                     or not settings["strotime_booking_allowed"] or not has_role(user, 'flod_saksbehandlere')):
+            abort(403, __error__=[u'Det er ikke mulig å behandle en søknad om strøtimer fordi type utlån er deaktivert for lokalet'])
 
         # The application might have been moved to a different resource.
         application.resource = resource
@@ -442,10 +434,12 @@ class ApplicationResource(BaseApplicationResource):
         elif application.get_type() == "repeating":
             slots = [parse_repeating_slot(slot, application) for slot in slot_data]
             application.repeating_slots = slots
+        elif application.get_type() == "strotime":
+            slots = [parse_strotime_slot(slot, application) for slot in slot_data]
 
         # Check if there are any conflicts
         for slot in slots:
-            if application.get_type() == "single":
+            if application.get_type() == "single" or application.get_type() == "strotime":
                 start_date = slot.start_time.date()
                 end_date = slot.end_time.date()
                 week_day = slot.start_time.isoweekday()
@@ -532,11 +526,13 @@ class ApplicationResource(BaseApplicationResource):
                 arkiver(application, document)
 
             application_dict = marshal(application, repeating_application_fields)
+        elif application.get_type() == "strotime":
+            application_dict = marshal(application, strotimer_application_fields)
 
         # Include emails in response, if requested
         if data.get("include_emails", False):
             _, granted_message = render_email_template(application, "Granted")
-            _, denied_message = render_email_template(application, "Denied")
+            _, denied_message = render_email_template_avvist_strotime(application) if application.get_type() == 'strotime' else render_email_template(application, "Denied")
             application_dict['emails'] = dict(
                 granted_message=granted_message,
                 denied_message=denied_message

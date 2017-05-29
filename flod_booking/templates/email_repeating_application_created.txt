@@ -1,0 +1,5 @@
+Din søknad om fastlån av {{ resource_name }} er mottatt.
+
+Søknaden blir behandlet av Utlånstjenesten. Svar på søknaden blir sendt til e-postadressen som er registrert på aktøren som du har søkt på vegne av, og til e-postadressen som er registrert på deg. Behandlingstid er beregnet til 2 måneder. Hvis du ikke mottar e-post fra oss kan du sjekke søppelpost-filteret i e-post programmet ditt.
+
+Vi ønsker tilbakemelding på din opplevelse av Bookingbasen og håper du kan svare på noen få spørsmål: https://response.questback.com/trondheimkommune/exlnv3kdiu

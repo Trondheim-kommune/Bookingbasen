@@ -16,7 +16,7 @@ httpretty==0.8.0
 isodate==0.5.0
 itsdangerous==0.24
 Jinja2==2.7.2
-kombu==3.0.15
+kombu==3.0.37
 Mako==0.9.1
 MarkupSafe==0.21
 mock==1.0.1
@@ -26,7 +26,7 @@ psycopg2==2.5.2
 pytz==2014.2
 requests==2.2.1
 responses==0.2.0
-six==1.6.1
+six==1.10.0
 SQLAlchemy==0.9.4
 suds==0.4
 urllib3==1.8.2

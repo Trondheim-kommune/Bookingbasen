@@ -152,6 +152,9 @@ var Flod = window.Flod || {};
         model: ns.RammetidSlot,
         initialize: function (models, options) {
             this.options = options;
+            if (!this.options.slot_duration) {
+                this.options.slot_duration = 30;
+            }
         },
         url: function () {
             var params = _.map(this.options, function (value, key) {

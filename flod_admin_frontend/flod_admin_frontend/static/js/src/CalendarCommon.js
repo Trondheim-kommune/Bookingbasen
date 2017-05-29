@@ -36,7 +36,7 @@ var Flod = window.Flod || {};
                 this.handleSlotSelect(slot);
                 return;
             }
-            var canRedirect = slot.has("application_id") && (slot.get("application_type") !== "strotime");
+            var canRedirect = slot.has("application_id");
             if (canRedirect) {
                 window.location.href = "/applications/" + slot.get("application_id");
             }

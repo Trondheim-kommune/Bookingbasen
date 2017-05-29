@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-from logging import StreamHandler
+from logging import StreamHandler, INFO
 
 from flod_aktor_frontend import app
 
@@ -12,3 +12,4 @@ if __name__ == "__main__":
 if not app.debug:
     stream_handler = StreamHandler()
     app.logger.addHandler(stream_handler)
+    app.logger.setLevel(INFO)

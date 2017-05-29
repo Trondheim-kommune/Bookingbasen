@@ -97,8 +97,8 @@ class RammetidToApplicationResource(BaseApplicationResource):
         if not resource:
             abort(404, __error__=[u'Ressursen finnes ikke.'])
 
-        if not resource.repeating_booking_allowed:
-            abort(403, __error__=[u'Gjentakende lån ikke tillatt'])
+        if not resource.rammetid_allowed:
+            abort(403, __error__=[u'Rammetid ikke tillatt'])
 
         user = get_user(request.cookies)
         person_uri = '/persons/{}'.format(user['person_id'])

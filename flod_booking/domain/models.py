@@ -53,12 +53,14 @@ class Resource(UriResource, Base):
     auto_approval_allowed = Column(Boolean, nullable=False, default=False)
     single_booking_allowed = Column(Boolean, nullable=False, default=False)
     repeating_booking_allowed = Column(Boolean, nullable=False, default=False)
+    rammetid_allowed = Column(Boolean, nullable=False, default=False)
 
     def __init__(self, uri):
         UriResource.__init__(self, uri)
         self.auto_approval_allowed = False
         self.single_booking_allowed = False
         self.repeating_booking_allowed = False
+        self.rammetid_allowed = False
 
 
 class Person(UriResource, Base):
@@ -352,7 +354,7 @@ class Application(Base):
         if typename == "repeating":
             return self.requested_repeating_slots
         if typename == "strotime":
-            return self.requested_strotime_slots
+            return self.strotime_slots
         return []
 
     @property

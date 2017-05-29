@@ -10,7 +10,7 @@ from domain.models import RammetidSlot, Rammetid, UmbrellaOrganisation, Repeatin
 from common_fields import umbrella_organisation_fields
 
 week_rammetid_slot_fields = {
-    'id': fields.Integer,
+    'id': fields.Integer(default=None),
     'start_date': ISO8601DateTime,
     'end_date': ISO8601DateTime,
     'start_time': ISO8601DateTime,
@@ -144,10 +144,11 @@ class WeeklyRammetidSlotsResource(BaseResource):
                 slots = self.get_repeating_slots(resource, start_date, end_date)
                 for slot in slots:
                     first_occurrence = self.get_first_occurrence(slot.week_day, slot.start_date)
+                    last_occurrence = self.get_last_occurrence(slot.week_day, slot.start_date, slot.end_date)
                     time_intervals[first_occurrence.isoweekday()].append({
                         "start": slot.start_time,
                         "end": slot.end_time,
-                        "week_number": first_occurrence.isocalendar()[1]
+                        "start_week_number": start_date.isocalendar()[1] if first_occurrence < start_date < last_occurrence else first_occurrence.isocalendar()[1]
                     })
             if "split_by_arrangement_slots" in request.args:
                 arrangements_slots = self.get_arrangements_slots(resource, start_date, end_date)
@@ -158,14 +159,16 @@ class WeeklyRammetidSlotsResource(BaseResource):
                     time_intervals[week_day].append({
                         "start": start_time,
                         "end": end_time,
-                        "week_number": arrangements_slot.start_time.isocalendar()[1]
+                        "start_week_number": arrangements_slot.start_time.isocalendar()[1],
+                        "end_week_number": arrangements_slot.end_time.isocalendar()[1]
                     })
             for time_interval in time_intervals:
                 time_interval.sort(key=lambda item: (item['start'], item['end']))
 
             for rammetid_slot in rammetid_slots:
                 time_interval_by_week_number = [item for item in time_intervals[rammetid_slot.week_day] if
-                                                max(start_date, rammetid_slot.start_date).isocalendar()[1] == item['week_number']]
+                                                max(start_date, rammetid_slot.start_date).isocalendar()[1] == item['start_week_number']]
+
                 periods = self.split_range_by_intervals(rammetid_slot.start_time, rammetid_slot.end_time, time_interval_by_week_number)
                 for period in periods:
                     results.append({
@@ -174,7 +177,10 @@ class WeeklyRammetidSlotsResource(BaseResource):
                         'start_date': rammetid_slot.start_date,
                         'end_date': rammetid_slot.end_date,
                         'week_day': rammetid_slot.week_day,
-                        'id': rammetid_slot.id,
+                        # Setting id to None, because the slot might have been splitted,
+                        # otherwise one of the slots with equal id will be eliminated in frontend by backbone.
+                        # For the moment rammetid_slot_id is not used anyway, only the reference to rammetid_id
+                        'id': None,
                         'rammetid_id': rammetid_slot.rammetid_id,
                         'status': rammetid_slot.rammetid.status,
                         'umbrella_organisation': rammetid_slot.rammetid.umbrella_organisation

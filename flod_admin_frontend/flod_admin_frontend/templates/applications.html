@@ -2,49 +2,69 @@
 
 
 {% block js %}
-{{ super() }}
-{% assets "applications_js" %}
-<script type="text/javascript" src="{{ ASSET_URL }}"></script>
-{% endassets %}
+    {{ super() }}
+    {% assets "applications_js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
 
-<script type="text/javascript">
-    (function() {
-        "use strict";
-        var applications = new Flod.ApplicationList({{applications | safe}});
-        new Flod.ApplicationListView({"collection": applications, "el": $("#applications")}).render();
+    <script type="text/javascript">
+        (function () {
+            "use strict";
+            var applications = new Flod.ApplicationList({{applications | safe}});
+            new Flod.ApplicationListView({"collection": applications, "el": $("#applications")}).render();
+            {% if status in ['Granted', 'Denied'] %}
+                new Flod.ApplicationsPeriodView({
+                    "status": "{{ status }}",
+                    "start_date": "{{ start_date }}",
+                    "end_date": "{{ end_date }}",
+                    "el": $("#applications_period")
+                }).render();
+            {% endif %}
+        }());
+    </script>
 
-    }());
-</script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.datepicker').datepicker({
+                format: 'dd.mm.yyyy',
+                weekStart: 1,
+                autoclose: true
+            });
+        });
+    </script>
 
 {% endblock %}
 
 {% block content %}
-{{ super() }}
-        <h2>Søknader</h2>
+    {{ super() }}
+    <h2>Søknader</h2>
 
-        <div class="well">
-            <a class="btn btn-primary" href="/application_for_actor">Opprett søknad for aktør</a>
-        </div>
+    <div class="well">
+        <a class="btn btn-primary" href="/application_for_actor">Opprett søknad for aktør</a>
+    </div>
 
-        <ul class="nav nav-tabs">
-            <li{% if status == 'Pending' %} class="active"{% endif %}>
-                <a href="/">Avventer behandling</a>
-            </li>
-            <li{% if status == 'Processing' %} class="active"{% endif %}>
-                <a href="/?status=processing">Behandles</a>
-            </li>
-            <li{% if status == 'Granted' %} class="active"{% endif %}>
-                <a href="/?status=granted">Godkjent</a>
-            </li>
-            <li{% if status == 'Denied' %} class="active"{% endif %}>
-                <a href="/?status=denied">Avvist</a>
-            </li>
-        </ul>
+    <ul class="nav nav-tabs">
+        <li{% if status == 'Pending' %} class="active"{% endif %}>
+            <a href="/">Avventer behandling</a>
+        </li>
+        <li{% if status == 'Processing' %} class="active"{% endif %}>
+            <a href="/?status=processing">Behandles</a>
+        </li>
+        <li{% if status == 'Granted' %} class="active"{% endif %}>
+            <a href="/?status=granted">Godkjent</a>
+        </li>
+        <li{% if status == 'Denied' %} class="active"{% endif %}>
+            <a href="/?status=denied">Avvist</a>
+        </li>
+    </ul>
+    {% if status in ['Granted', 'Denied'] %}
+        <div id="applications_period"></div>
+    {% endif %}
 
-        <div id="applications"></div>
+    <div id="applications"></div>
 {% endblock %}
 
 {% block templates %}
-{{ super() }}
-{% include "application_list_js_templates.html" %}
+    {{ super() }}
+    {% include "application_list_js_templates.html" %}
 {% endblock %}

@@ -1,53 +1,39 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 import os
-from flask import current_app, request, render_template
-from flask.ext.restful import fields, marshal_with, abort
-from flask.ext.bouncer import requires, ensure, POST, DELETE
-from isodate import parse_datetime
-from BaseResource import ISO8601DateTime, get_resource_for_uri, \
-    get_person_for_uri, get_resource_from_web, get_person_from_web
-from datetime import datetime
 
-from api.ApplicationResource import format_application_status_for_email
-from BaseApplicationResource import BaseApplicationResource
-from ResourceResource import resource_fields
-from SlotResource import slot_fields
-from domain.models import StrotimeSlot, Application
-from common_fields import person_fields
 from api.BaseApplicationResource import nearest_hour
-from util.email import format_slot_for_email
 from celery_tasks.email_tasks import send_email_task
-from email import send_email_to_resource
+from datetime import datetime
+from domain.models import StrotimeSlot, Application
+from flask import current_app, request, render_template
+from flask.ext.bouncer import requires, ensure, POST, DELETE
+from flask.ext.restful import marshal_with, abort
+from isodate import parse_datetime
+from util.email import format_slot_for_email, format_application_status_for_email
+
+from BaseApplicationResource import BaseApplicationResource
+from BaseResource import get_resource_for_uri, \
+    get_person_for_uri, get_resource_from_web, get_person_from_web
 from SettingsResource import SettingsResource
+from application_fields import strotimer_application_fields
+from email import send_email_to_resource
 
 USERS_URL = os.environ.get('USERS_URL', 'http://localhost:4000')
 
-strotimer_application_fields = {
-    'id': fields.Integer,
-    'text': fields.String,
-    'person': fields.Nested(person_fields),
-    'resource': fields.Nested(resource_fields),
-    'requested_resource': fields.Nested(resource_fields),
-    'slots': fields.Nested(slot_fields),
-    'status': fields.String,
-    'application_time': ISO8601DateTime
-}
-
 
 def send_email_strotime_granted(application):
-    personJSON = get_person_from_web(application.person.uri)
-    resourceJSON = get_resource_from_web(application.resource.uri)
+    person = get_person_from_web(application.person.uri)
+    resource = get_resource_from_web(application.resource.uri)
     person_name = ''
-    if personJSON['first_name'] and personJSON['last_name']:
-        person_name = personJSON['first_name'] + " " + personJSON['last_name']
-    if personJSON['email_address']:
+    if person['first_name'] and person['last_name']:
+        person_name = person['first_name'] + " " + person['last_name']
+    if person['email_address']:
         application_status = format_application_status_for_email(application.status)
 
         resource_name = ""
-        if resourceJSON['name']:
-            resource_name = resourceJSON['name']
+        if resource['name']:
+            resource_name = resource['name']
 
         slots = []
         for slot in application.slots:
@@ -59,7 +45,7 @@ def send_email_strotime_granted(application):
             slots=slots,
             person_name=person_name
         )
-        resource_email = personJSON['email_address']
+        resource_email = person['email_address']
         if message is not None and resource_email is not None:
             send_email_task.delay(
                 u'Strøtime tildelt',
@@ -113,15 +99,14 @@ class StrotimeApplicationResource(BaseApplicationResource):
             if slot.start_time < nearest_hour(datetime_now):
                 abort(400, __error__=[u'Du kan ikke søke om en time tilbake i tid'])
 
-            if self.is_conflict_slot_time(resource, start_date, end_date, week_day, start_time, end_time) or \
-                    self.is_conflict_rammetid(resource, start_date, end_date, week_day, start_time, end_time):
+            if self.is_conflict_slot_time(resource, start_date, end_date, week_day, start_time, end_time):
                 abort(400, __error__=[u'Tiden du har søkt på er ikke tilgjengelig'])
             if self.is_conflict_blocked_time(resource, start_date, end_date, week_day, start_time, end_time):
                 abort(400, __error__=[u'Tiden du har søkt på er blokkert'])
 
             # The start time must be in the range 3-21 days (inclusive)
             days = (slot.start_time.date() - datetime_now.date()).days
-            if days >= 3 and days <= 21:
+            if 3 <= days <= 21:
                 application.add_strotime_slot(slot)
             else:
                 abort(400, __error__=[u'Tiden må være innenfor 3-21 dager fra dagens dato'])

@@ -45,14 +45,18 @@ var Flod = Flod || {};
 
         highlightMarker: function () {
             if (this.marker && this.collection.hasMap) {
-                this.marker.setIcon(greenIcon);
+                // this.marker.setIcon(greenIcon);
+                // Setting icon src manually to bypass bug in leaflet (https://github.com/Leaflet/Leaflet/issues/561). Cannot upgrade leaflet without fixing SpatialBB as well.
+                this.marker._icon.src = greenIcon.options.iconUrl;
                 this.marker.setZIndexOffset(1000);
 
             }
         },
         deHighlightMarker: function () {
             if (this.marker && this.collection.hasMap) {
-                this.marker.setIcon(new L.Icon.Default());
+                // this.marker.setIcon(new L.Icon.Default());
+                // Setting icon src manually to bypass bug in leaflet (https://github.com/Leaflet/Leaflet/issues/561). Cannot upgrade leaflet without fixing SpatialBB as well.
+                this.marker._icon.src = (new L.Icon.Default())._getIconUrl("icon");
                 this.marker.setZIndexOffset(0);
 
             }
@@ -108,8 +112,8 @@ var Flod = Flod || {};
         },
 
         routes: {
-            "(category=:category)":  "search",
-            "map(/category=:category)":      "mapsearch"
+            "(category=:category)": "search",
+            "map(/category=:category)": "mapsearch"
         },
 
         search: function (category) {
@@ -447,14 +451,16 @@ var Flod = Flod || {};
             {
                 "name": "size",
                 "type": Flod.FormElems.MinMaxSelect,
-                "data": {"id": "capacity", "label": "Størrelse (antall personer)", "options": [
-                    {"name": "---"},
-                    {"name": "0-50 personer", "min": 0, "max": 50},
-                    {"name": "50-150 personer", "min": 50, "max": 150},
-                    {"name": "150-250 personer", "min": 150, "max": 250},
-                    {"name": "250-500 personer", "min": 250, "max": 500},
-                    {"name": "500+ personer", "min": 500}
-                ]}
+                "data": {
+                    "id": "capacity", "label": "Størrelse (antall personer)", "options": [
+                        {"name": "---"},
+                        {"name": "0-50 personer", "min": 0, "max": 50},
+                        {"name": "50-150 personer", "min": 50, "max": 150},
+                        {"name": "150-250 personer", "min": 150, "max": 250},
+                        {"name": "250-500 personer", "min": 250, "max": 500},
+                        {"name": "500+ personer", "min": 500}
+                    ]
+                }
             },
             {
                 "name": "district",
@@ -462,28 +468,28 @@ var Flod = Flod || {};
                 "data": {"id": "district", "label": "Bydel", "options": []}
             },
             /*
-            kommentert bort pga feilen som må fikses først, da denne dd fungerer ikke
-            {
-                "name": "activity_type",
-                "type":  Flod.FormElems.FormSelect,
-                "data": {"id": "activity_type", "label": "Aktivitetstype", "options":
-                    {
-                        "0": {"name": "Dans"},
-                        "1": {"name": "Filmvisning"},
-                        "2": {"name": "Formingsaktivitet, hobby"},
-                        "3": {"name": "Idrett, trening"},
-                        "4": {"name": "Kor"},
-                        "5": {"name": "Korps, orkester"},
-                        "6": {"name": "Kurs, undervisning"},
-                        "7": {"name": "Utstilling"},
-                        "8": {"name": "Konsert, forestilling, drama"},
-                        "9": {"name": "Møte, konferanse, seminar"}
-                    }
-                    }
-            },*/
+             kommentert bort pga feilen som må fikses først, da denne dd fungerer ikke
+             {
+             "name": "activity_type",
+             "type":  Flod.FormElems.FormSelect,
+             "data": {"id": "activity_type", "label": "Aktivitetstype", "options":
+             {
+             "0": {"name": "Dans"},
+             "1": {"name": "Filmvisning"},
+             "2": {"name": "Formingsaktivitet, hobby"},
+             "3": {"name": "Idrett, trening"},
+             "4": {"name": "Kor"},
+             "5": {"name": "Korps, orkester"},
+             "6": {"name": "Kurs, undervisning"},
+             "7": {"name": "Utstilling"},
+             "8": {"name": "Konsert, forestilling, drama"},
+             "9": {"name": "Møte, konferanse, seminar"}
+             }
+             }
+             },*/
             {
                 "name": "accessibility",
-                "type":  Flod.FormElems.CheckBoxGroup,
+                "type": Flod.FormElems.CheckBoxGroup,
                 "data": {
                     "id": "accessibility",
                     "label": "Spesielle behov",
@@ -582,7 +588,7 @@ var Flod = Flod || {};
         },
 
         deselectBboxDropdowns: function (except) {
-            var  deselect = _.filter(this.elements, function (element) {
+            var deselect = _.filter(this.elements, function (element) {
                 return (element instanceof Flod.FormElems.FormBboxSelect);
             });
             if (except) {

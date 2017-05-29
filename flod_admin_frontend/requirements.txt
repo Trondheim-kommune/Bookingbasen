@@ -10,6 +10,6 @@ MarkupSafe==0.21
 mock==1.0.1
 requests==2.2.1
 responses==0.2.0
-six==1.6.1
+six==1.10.0
 webassets==0.9
 Werkzeug==0.9.4

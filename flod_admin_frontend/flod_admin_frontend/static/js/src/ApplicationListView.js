@@ -54,4 +54,31 @@ var Flod = window.Flod || {};
         }
     });
 
+    ns.ApplicationsPeriodView = Backbone.View.extend({
+        template: $("#applications_period_template").html(),
+        className: "well",
+        initialize: function () {
+            this.status = this.options.status.toLowerCase();
+            this.start_date = moment(this.options.start_date, "YYYY-MM-DD");
+            this.end_date = moment(this.options.end_date, "YYYY-MM-DD");
+        },
+        render: function () {
+            this.$el.addClass(this.className);
+            this.$el.html(_.template(this.template));
+            this.$el.find('#start_date_div').datepicker("setDate", this.start_date.toDate());
+            this.$el.find('#end_date_div').datepicker("setDate", this.end_date.toDate());
+            return this;
+        },
+
+        events: {
+            "click #change_period": "changePeriod"
+        },
+
+        changePeriod: function () {
+            window.location.href = "/?status=" + this.status +
+                "&start_date=" + moment(this.$el.find("#start_date").val(), "DD.MM.YYYY").format("YYYY-MM-DD") +
+                "&end_date=" + moment(this.$el.find("#end_date").val(), "DD.MM.YYYY").format("YYYY-MM-DD");
+        }
+    });
+
 }(Flod));

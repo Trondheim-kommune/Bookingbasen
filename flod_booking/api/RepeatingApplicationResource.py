@@ -1,36 +1,17 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-from flask.ext.restful import fields, marshal_with, abort
-from flask.ext.bouncer import requires, POST
+from domain.models import Application, RepeatingSlotRequest, BookingDomainException
 from flask import current_app, request
+from flask.ext.bouncer import requires, POST
+from flask.ext.restful import marshal_with, abort
 from isodate import parse_date, parse_time
 from repo import get_user, has_role
 
-from domain.models import (Application, RepeatingSlotRequest,
-                           BookingDomainException)
-from BaseResource import ISO8601DateTime, \
-    get_organisation_for_uri, get_resource_for_uri, get_person_for_uri
-from ResourceResource import resource_fields
-from RepeatingSlotResource import repeating_slot_fields
-from common_fields import person_fields, organisation_fields
 from BaseApplicationResource import BaseApplicationResource
-from email import send_email_to_resource
+from BaseResource import get_organisation_for_uri, get_resource_for_uri, get_person_for_uri
 from SettingsResource import SettingsResource
-
-repeating_application_fields = {
-    'id': fields.Integer,
-    'text': fields.String,
-    'facilitation': fields.String,
-    'person': fields.Nested(person_fields),
-    'organisation': fields.Nested(organisation_fields),
-    'resource': fields.Nested(resource_fields),
-    'requested_resource': fields.Nested(resource_fields),
-    'slots': fields.Nested(repeating_slot_fields),
-    'status': fields.String,
-    'application_time': ISO8601DateTime,
-    'invoice_amount': fields.Integer,
-    'to_be_invoiced': fields.Boolean
-}
+from application_fields import repeating_application_fields
+from email import send_email_to_resource, send_email_to_applicant
 
 
 class RepeatingApplicationResource(BaseApplicationResource):
@@ -137,5 +118,6 @@ class RepeatingApplicationResource(BaseApplicationResource):
         current_app.db_session.commit()
         current_app.db_session.refresh(application)
         send_email_to_resource(application)
+        send_email_to_applicant(application)
 
         return application, 201

@@ -1,36 +1,18 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+from domain.models import SlotRequest, Application
 from flask import current_app, request
-from flask.ext.restful import fields, marshal_with, abort
 from flask.ext.bouncer import requires, POST
+from flask.ext.restful import marshal_with, abort
 from isodate import parse_datetime
 from repo import get_user, has_role
 
-from BaseResource import ISO8601DateTime, get_resource_for_uri, \
-    get_organisation_for_uri, get_person_for_uri
-
-from ResourceResource import resource_fields
-from SlotResource import slot_fields
-from domain.models import SlotRequest, Application
-from common_fields import person_fields, organisation_fields
 from BaseApplicationResource import BaseApplicationResource
-from email import send_email_to_resource, send_email_to_applicant
+from BaseResource import get_resource_for_uri, \
+    get_organisation_for_uri, get_person_for_uri
 from SettingsResource import SettingsResource
-
-single_application_fields = {
-    'id': fields.Integer,
-    'text': fields.String,
-    'facilitation': fields.String,
-    'person': fields.Nested(person_fields),
-    'organisation': fields.Nested(organisation_fields),
-    'resource': fields.Nested(resource_fields),
-    'requested_resource': fields.Nested(resource_fields),
-    'slots': fields.Nested(slot_fields),
-    'status': fields.String,
-    'application_time': ISO8601DateTime,
-    'invoice_amount': fields.Integer,
-    'to_be_invoiced': fields.Boolean
-}
+from application_fields import single_application_fields
+from email import send_email_to_resource, send_email_to_applicant
 
 
 class SingleApplicationResource(BaseApplicationResource):
@@ -59,9 +41,10 @@ class SingleApplicationResource(BaseApplicationResource):
         user = get_user(request.cookies)
 
         # Check that the resource allows the type of application
-        if not settings["single_booking_allowed"] and not (has_role(user, 'flod_brukere') or has_role(user, 'flod_saksbehandlere')) or \
-                not resource.single_booking_allowed:
-            abort(403, __error__=[u'Engangslån ikke tillatt'])
+        if not (has_role(user, 'flod_saksbehandlere') and is_arrangement):
+            if not settings["single_booking_allowed"] and not (has_role(user, 'flod_brukere') or has_role(user, 'flod_saksbehandlere')) or \
+                    not resource.single_booking_allowed:
+                abort(403, __error__=[u'Engangslån ikke tillatt'])
 
         organisation_data = data.get("organisation", None)
         if organisation_data:

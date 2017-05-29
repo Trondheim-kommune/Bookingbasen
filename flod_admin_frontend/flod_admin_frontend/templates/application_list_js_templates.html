@@ -19,20 +19,20 @@
     <td><%= type %><% if (is_arrangement) { print(' (arrangement)') } %></td>
     <td>
         <% if (organisation) {
-            print(organisation)
+        print(organisation)
         } else {
-            print('Privatlån')
+        print('Privatlån')
         } %>
         <% if (organisation_is_deleted) { %>
-            <br /><span class="label label-warning">Aktør fjernet</span>
+        <br/><span class="label label-warning">Aktør fjernet</span>
         <% }%>
     </td>
     <td><%= person %>
         <% if(person_email_address) { %>
         <a href="mailto:<%=person_email_address%>" target="_top"><i class="icon-envelope"></i>
-        <% }%>
+            <% }%>
     </td>
-    <td><%= facility %><% if (resource_is_deleted) { %><br /><span class="label label-warning">Lokalet fjernet</span><% }%></td>
+    <td><%= facility %><% if (resource_is_deleted) { %><br/><span class="label label-warning">Lokalet fjernet</span><% }%></td>
     <td><% _.each(times, function(time) { %>
         <ul class="unstyled">
             <li style="white-space: nowrap"><%= time %></li>
@@ -40,5 +40,21 @@
         <% }) %>
     </td>
     <td><%= application_time %></td>
-    <td style="white-space: nowrap"><a href="/applications/<%= id %>" class="btn"><% if (showEdit && !resource_is_deleted) { %>Behandle søknad<% } else { %> Se søknad <% } %></a></td>
+    <td style="white-space: nowrap"><a href="/applications/<%= id %>" class="btn"><% if (showEdit && !resource_is_deleted) { %>Behandle søknad<% } else { %> Se søknad <% } %></a>
+    </td>
 </script>
+
+<script type="text/template" id="applications_period_template">
+    Viser søknader for perioden
+    <div id="start_date_div" class="input-append date datepicker" data-date="" data-date-format="dd.mm.yyyy">
+        <input id="start_date" class="input-small" type="text">
+        <span class="add-on"><i class="icon-calendar"></i></span>
+    </div>
+    -
+    <div id="end_date_div" class="input-append date datepicker" data-date="" data-date-format="dd.mm.yyyy">
+        <input id="end_date" class="input-small" type="text">
+        <span class="add-on"><i class="icon-calendar"></i></span>
+    </div>
+    <div id="change_period" class="btn btn-primary" style="margin-bottom: 10px">Oppdater</div>
+</script>
+

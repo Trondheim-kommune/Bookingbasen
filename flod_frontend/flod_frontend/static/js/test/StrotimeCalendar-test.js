@@ -69,7 +69,7 @@
             assert.called(spy);
             assert.equals(spy.args[0][0].length, 1);
 
-            assert.equals(ajaxSpy.callCount, 4);
+            assert.equals(ajaxSpy.callCount, 3);
         },
 
         "change day should re-render calendar": function () {
@@ -88,27 +88,27 @@
 
             var calendar = bookingView.calendar;
             calendar.setResources(new Backbone.Collection(this.facilities[0])); // 3 calls
-            assert.equals(ajaxSpy.callCount, 3);
+            assert.equals(ajaxSpy.callCount, 2);
 
             var sunday = $($(bookingView.calendar.weekView.$("tbody").children()[0]).children()[7]);
             sunday.trigger("click"); // 3 calls
-            assert.equals(ajaxSpy.callCount, 6);
+            assert.equals(ajaxSpy.callCount, 4);
 
             var next = $($(bookingView.calendar.weekView.$(".flod-btn #right")));
             next.trigger("click"); // 3 calls
-            assert.equals(ajaxSpy.callCount, 9);
+            assert.equals(ajaxSpy.callCount, 6);
 
             var friday = $($(bookingView.calendar.weekView.$("tbody").children()[0]).children()[6]);
             friday.trigger("click"); // 3 calls
-            assert.equals(ajaxSpy.callCount, 12);
+            assert.equals(ajaxSpy.callCount, 8);
 
             var fridayAgain = $($(bookingView.calendar.weekView.$("tbody").children()[0]).children()[6]);
             assert(fridayAgain.hasClass("selected")); // 0 calls
-            assert.equals(ajaxSpy.callCount, 12);
+            assert.equals(ajaxSpy.callCount, 8);
 
             var weekview = bookingView.calendar.weekView;
             weekview.trigger("changeDay",moment("2015-04-30")); // 3 calls
-            assert.equals(ajaxSpy.callCount, 15);
+            assert.equals(ajaxSpy.callCount, 10);
 
             assert.equals($($(bookingView.calendar.$("thead").children()[0]).children()[0]).html(), "Torsdag");
             assert.equals($($(bookingView.calendar.$("thead").children()[1]).children()[0]).html(), "30.4");
@@ -146,11 +146,10 @@
             var spy = this.spy(calendar.calendar.model, "reset");
             calendar.render(); // 0 calls
             calendar.setResources(new Backbone.Collection(this.facilities[0]));
-            assert.calledThrice(Backbone.$.ajax); // 3 calls
+            assert.calledTwice(Backbone.$.ajax); // 3 calls
 
-            assert.equals(Backbone.$.ajax.args[0][0].url, "/api/booking/v1/slots/?resource_uri=%2Ffacilities%2F1&day=" + moment().add("days",3).format("YYYY-MM-DD") + "&status=Granted");
+            assert.equals(Backbone.$.ajax.args[0][0].url, "/api/booking/v1/slots/?resource_uri=%2Ffacilities%2F1&slot_duration=30&day=" + moment().add("days",3).format("YYYY-MM-DD") + "&status=Granted");
             assert.equals(Backbone.$.ajax.args[1][0].url, "/api/booking/v1/resources/facilities/1/blockedtimes/?date=" + moment().add("days",3).format("YYYY-MM-DD"));
-            assert.equals(Backbone.$.ajax.args[2][0].url, "/api/booking/v1/weeklyrammetidslots/?split_by_slots=true&resource_uri=%2Ffacilities%2F1&start_date=" + moment().add("days",3).format("YYYY-MM-DD") + "&end_date="+moment().add("days",3).format("YYYY-MM-DD")+"&split_by_arrangement_slots=true");
 
             assert.calledOnce(spy);
             assert.equals(calendar.resources.at(0).get("slots").length, 1);

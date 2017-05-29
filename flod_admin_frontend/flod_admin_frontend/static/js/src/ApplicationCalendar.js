@@ -194,6 +194,7 @@ var Flod = window.Flod || {};
                 year: this.currentWeek.get("year"),
                 week: this.currentWeek.get("week"),
                 except: this.model.get("id"),
+                split_by_arrangement_slots: true,
                 slot_duration: 30
             });
 
@@ -235,7 +236,7 @@ var Flod = window.Flod || {};
                 slot.set({
                     status: slot.get('status') + ' own-slot',
                     is_arrangement: self.model.get("is_arrangement"),
-                    display_name: slot.getDisplayName()
+                    display_name: slot.getAktorName()
                 });
             });
             var mappedOwnSlots = ownSlots.reduce(ns.mapSlots, {});

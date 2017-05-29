@@ -64,24 +64,21 @@ var Flod = window.Flod || {};
         initialize: function () {
             this.set({
                 "slots": new ns.Slots([], {
-                    resource_uri: this.get("uri")
+                    resource_uri: this.get("uri"),
+                    slot_duration: 30
                 }),
                 "blocks": new ns.BlockedSlots([], {
                     resource_uri: this.get("uri"),
-                    type: 'blockedtimes'
-                }),
-                "rammetid_slots": new ns.RammetidSlots([], {
-                    split_by_slots: true,
-                    resource_uri: this.get("uri")
+                    type: 'blockedtimes',
+                    slot_duration: 30
                 })
             });
         },
 
         fetchSlotsAndBlocks: function (date, callback) {
-            var fetcted = _.after(3, callback);
+            var fetcted = _.after(2, callback);
             this.fetchSlots(date, fetcted);
             this.fetchReservedTimes(date, fetcted);
-            this.fetchRammetidSlots(date, fetcted);
         },
 
         fetchSlots: function (date, callback) {
@@ -95,15 +92,6 @@ var Flod = window.Flod || {};
             var block = this.get("blocks");
             block.options['date'] = date.format("YYYY-MM-DD");
             block.fetch({"success": callback});
-        },
-
-        fetchRammetidSlots: function(date, callback) {
-            var rammetid_slots = this.get("rammetid_slots");
-            rammetid_slots.options['start_date'] = date.format("YYYY-MM-DD");
-            rammetid_slots.options['end_date'] = date.format("YYYY-MM-DD");
-            rammetid_slots.options['split_by_arrangement_slots'] = true;
-            rammetid_slots.options['split_by_slots'] = true;
-            rammetid_slots.fetch({"success": callback});
         }
     });
 
@@ -125,8 +113,8 @@ var Flod = window.Flod || {};
             this.date = this.options.startDate || moment();
             var range = getThreeWeekPeriod(this.date);
             var week = new Flod.Week({
-                "year": this.date.year(),
-                "week": this.date.isoWeek(),
+                "year": range.start.year(),
+                "week": range.start.isoWeek(),
                 "range": range
             });
 
@@ -184,17 +172,7 @@ var Flod = window.Flod || {};
 
                 var slots = ns.findCollisionsSlots(resource.get("slots").models);
 
-                // Remove those rammetid slots that are not on the selected week day.
-                var rammetid_slots = resource.get("rammetid_slots").filter(function (model) {
-                    return _.isEqual(model.get("week_day"), this.date.isoWeekday());
-                }, this);
-
-                _.each(rammetid_slots, function (rammetid_slot) {
-                    //adjust date to today so that collision detection works
-                    rammetid_slot.changeDate(this.date);
-                }, this);
-
-                var concatinated = slots.concat(blocks).concat(rammetid_slots);
+                var concatinated = slots.concat(blocks);
                 var allSlots = ns.findCollisionsSlots(concatinated);
 
                 //change styling on collision slots

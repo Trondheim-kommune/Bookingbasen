@@ -77,6 +77,7 @@ bootstrap_css = Bundle(
 applications_js = Bundle(
     'js/lib/moment.min.js',
     Bundle('js/lib/moment-nb.js',
+           'js/lib/bootstrap-datepicker.js',
            'js/src/Resource.js',
            'js/src/Facility.js',
            'js/src/ApplicationCommon.js',

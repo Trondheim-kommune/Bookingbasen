@@ -17,7 +17,8 @@ resource_fields = {
     'uri': fields.String,
     'auto_approval_allowed': fields.Boolean,
     'single_booking_allowed': fields.Boolean,
-    'repeating_booking_allowed': fields.Boolean
+    'repeating_booking_allowed': fields.Boolean,
+    'rammetid_allowed': fields.Boolean
 }
 
 
@@ -50,6 +51,12 @@ class ResourceResource(restful.Resource):
                     Resource.repeating_booking_allowed == True
                 )
 
+            if "booking_type" in request.args and \
+                            request.args["booking_type"] == "rammetid_allowed":
+                resources = resources.filter(
+                    Resource.rammetid_allowed == True
+                )
+
             if "umbrella_organisation_uri" in request.args:
                 resources = resources.filter(
                     Rammetid.resource_id == Resource.id,
@@ -78,7 +85,7 @@ class ResourceResource(restful.Resource):
         data = request.get_json()
 
         mandatory_fields = ["auto_approval_allowed", "single_booking_allowed",
-                            "repeating_booking_allowed"]
+                            "repeating_booking_allowed", "rammetid_allowed"]
         verify_request_contains_mandatory_fields(data, mandatory_fields)
 
         resource = self.get_resource(resource_id, resource_uri)
@@ -87,6 +94,7 @@ class ResourceResource(restful.Resource):
         resource.auto_approval_allowed = data["auto_approval_allowed"]
         resource.single_booking_allowed = data["single_booking_allowed"]
         resource.repeating_booking_allowed = data["repeating_booking_allowed"]
+        resource.rammetid_allowed = data["rammetid_allowed"]
 
         current_app.db_session.add(resource)
         current_app.db_session.commit()

@@ -1,24 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from flask import render_template, request
-from flask.ext.restful import fields,  marshal, abort
-from flask.ext.bouncer import requires, POST
+from celery_tasks.email_tasks import send_email_task
 from domain.models import Application
+from flask import render_template, request
+from flask.ext.bouncer import requires, POST
+from flask.ext.restful import fields, marshal
+from util.email import format_repeating_slot_for_email, format_slot_for_email
+
+from ArrangementBaseResource import ArrangementBaseResource
 from BaseResource import (ISO8601DateTime, get_resource_from_web, get_organisation_from_web, get_person_from_web)
 from common_fields import person_fields, organisation_fields
-from celery_tasks.email_tasks import send_email_task
-from util.email import format_repeating_slot_for_email, format_slot_for_email
-from ArrangementBaseResource import ArrangementBaseResource
-from sqlalchemy.orm.exc import NoResultFound
 
 generic_slot_fields = {
     'id': fields.Integer,
-    'start_date' : ISO8601DateTime,
-    'end_date' : ISO8601DateTime,
-    'start_time' : ISO8601DateTime,
-    'end_time' : ISO8601DateTime,
-    'week_day' : fields.Integer,
+    'start_date': ISO8601DateTime,
+    'end_date': ISO8601DateTime,
+    'start_time': ISO8601DateTime,
+    'end_time': ISO8601DateTime,
+    'week_day': fields.Integer,
 }
 
 resource_fields = {
@@ -29,8 +29,8 @@ resource_fields = {
 application_fields = {
     'id': fields.Integer,
     'text': fields.String,
-    'person' : fields.Nested(person_fields),
-    'organisation' : fields.Nested(organisation_fields),
+    'person': fields.Nested(person_fields),
+    'organisation': fields.Nested(organisation_fields),
     'resource': fields.Nested(resource_fields),
     'requested_resource': fields.Nested(resource_fields),
     'slots': fields.Nested(generic_slot_fields),
@@ -38,6 +38,7 @@ application_fields = {
     'application_time': ISO8601DateTime,
     'type': fields.String
 }
+
 
 class ArrangementNotificationResource(ArrangementBaseResource):
     t = Application
@@ -85,7 +86,7 @@ class ArrangementNotificationResource(ArrangementBaseResource):
                     send_email_task.delay(u'Arrangement',
                                           u'booking@trondheim.kommune.no',
                                           [email_address],
-                                           msg)
+                                          msg)
 
     @requires(POST, 'ArrangementNotification')
     def post(self, application_id):

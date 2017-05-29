@@ -85,6 +85,15 @@ class BaseResource(restful.Resource):
         return d
 
     @classmethod
+    def get_last_occurrence(cls, week_day, start_date, end_date):
+        d = end_date
+        delta = timedelta(days=1)
+        while d.isoweekday() != week_day:
+            d -= delta
+            if d < start_date: return None
+        return d
+
+    @classmethod
     def split_range_by_intervals(cls, start, end, intervals):
         periods = []
         current_start = start

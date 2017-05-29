@@ -59,7 +59,7 @@
                 <dl class="dl-horizontal">
                     <dt>Valgt lokale</dt>
                     <dd><%=facility.name %>
-                        <button class="btn btn-small" id="change_facility">Endre</button>
+                        <% if (type !== 'strotime') { %> <button class="btn btn-small" id="change_facility">Endre</button> <% } %>
                     </dd>
                     <dt>Ønsket lokale</dt>
                     <dd><%=requested_facility.name %></dd>
@@ -113,6 +113,7 @@
                             </tbody>
                         </table>
                     </dd>
+                    <% if (type !== 'strotime') { %>
                     <dt>Ønsket tid</dt>
                     <dd>
                         <table class="noborders">
@@ -128,6 +129,7 @@
                             </tbody>
                         </table>
                     </dd>
+                    <% } %>
                 </dl>
             </div>
             <div class="span4">
@@ -138,6 +140,7 @@
         <div class="row-fluid">
 
                 <div class="span8">
+                    <% if (type !== 'strotime') { %>
                     <form>
                     <strong>Søknadstekst</strong>
 
@@ -177,6 +180,7 @@
                     <textarea id="id_comment" type="text" class="span12" rows="5" <% if (status.key=="Granted" || status.key=="Denied") { %>disabled="disabled"<% } %>><%= comment
                     %></textarea>
                     </form>
+                    <% } %>
                 </div>
 
             <div class="span4 pull-down" id="buttons"></div>
@@ -212,12 +216,15 @@
     <script type="text/template" id="message_box_template">
         <p>Følgende epost vil bli sendt til søker:</p>
         <textarea rows="7" style="width: 100%;" readonly><%= email %></textarea>
+
+        <% if (type !== 'strotime') { %>
         <p><%= text %></p>
         <textarea rows="4" style="width:100%;" id="message"></textarea>
         <div class="control-group form-inline">
             <label for="id_to_be_invoiced">Skal faktureres</label>
             <input type="checkbox" id="id_to_be_invoiced" name="to_be_invoiced" class="no-margin-top">
         </div>
+        <% } %>
 
         <!-- <p>Oppgi faktureringsbeløp:</p>
         <input type="number" placeholder="Beløp (kun heltall)" id="invoice_amount">

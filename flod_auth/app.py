@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from logging import StreamHandler
+from logging import StreamHandler, INFO
 import copy
 from datetime import timedelta
 
@@ -30,6 +30,7 @@ def configure_logger(app):
     if not app.debug:
         stream_handler = StreamHandler()
         app.logger.addHandler(stream_handler)
+        app.logger.setLevel(INFO)
     app.logger.info('Logger configured.')
 
 

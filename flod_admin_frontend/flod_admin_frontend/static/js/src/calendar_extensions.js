@@ -149,6 +149,7 @@ var Flod = window.Flod || {};
                 resource_uri: this.options.data.resource.get("uri"),
                 year: this.currentWeek.get("year"),
                 week: this.currentWeek.get("week"),
+                split_by_arrangement_slots: true,
                 status: "Granted"
             });
 

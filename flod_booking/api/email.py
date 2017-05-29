@@ -15,6 +15,7 @@ def get_person_name(person_data):
         return '%s %s' % (person_data['first_name'], person_data['last_name'])
     return None
 
+
 def get_organisation_name(application):
     if application.organisation:
         organisation_data = get_organisation_from_web(
@@ -22,6 +23,19 @@ def get_organisation_name(application):
         )
         return organisation_data.get('name', None)
     return None
+
+
+def get_organisation_emails(application):
+    emails = []
+    if application.organisation:
+        organisation_data = get_organisation_from_web(application.organisation.uri)
+        org_email = organisation_data.get('email_address')
+        if org_email:
+            emails.append(org_email)
+        org_local_email = organisation_data.get('local_email_address')
+        if org_local_email:
+            emails.append(org_local_email)
+    return emails
 
 
 def generate_slots(application):
@@ -33,7 +47,6 @@ def generate_slots(application):
 
 
 def send_email_to_resource(application):
-
     person_data = get_person_from_web(application.person.uri)
     resource_data = get_resource_from_web(application.resource.uri)
 
@@ -95,7 +108,6 @@ def send_email_to_resource(application):
 
 
 def send_email_to_applicant(application):
-
     person_data = get_person_from_web(application.person.uri)
     resource_data = get_resource_from_web(application.resource.uri)
 
@@ -104,27 +116,31 @@ def send_email_to_applicant(application):
 
     message = None
     topic = None
+    reciepients = []
+    if person_email:
+        reciepients.append(person_email)
 
     if application.type == 'single':
-        topic = u'Søknad om engangslån'
+        topic = u'Søknad om engangslån mottatt'
         message = render_template(
-            'email_application_created.txt',
+            'email_single_application_created.txt',
             resource_name=resource_name
         )
 
     if application.type == 'repeating':
-        topic = u'Søknad om fast lån'
+        topic = u'Søknad om fastlån mottatt'
+        reciepients.extend(get_organisation_emails(application))
         message = render_template(
-            'email_application_created.txt',
+            'email_repeating_application_created.txt',
             resource_name=resource_name
         )
 
-    if not person_email or not topic or not message:
+    if not reciepients or not topic or not message:
         return
 
     send_email_task.delay(
         topic,
         u'booking@trondheim.kommune.no',
-        [person_email],
+        reciepients,
         message
     )

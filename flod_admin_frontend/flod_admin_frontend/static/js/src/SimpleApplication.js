@@ -14,7 +14,8 @@ var Flod = window.Flod || {};
 
         typeMapping: {
             "single": "Engangslån",
-            "repeating": "Fast lån"
+            "repeating": "Fast lån",
+            "strotime": "Strøtime"
         },
 
         getSlotType: function () {

@@ -12,9 +12,9 @@ var Flod = window.Flod || {};
 
         template: $("#message_box_template").html(),
 
-        render: function (text, email) {
+        render: function (text, type, email) {
             this.$el.html(_.template(
-                this.template, {text: text, email: email}));
+                this.template, {text: text, type: type, email: email}));
 
             return this;
         },
@@ -271,7 +271,7 @@ var Flod = window.Flod || {};
             this.modal.render();
             var email = this.model.get("emails")["granted_message"];
             this.modal.$(".modal-body").html(this.messageView.render(
-                "Viktig informasjon til låntaker:", email).$el);
+                "Viktig informasjon til låntaker:", this.model.get("type"), email).$el);
 
             this.modal.on("submit", _.bind(function () {
                 var to_be_invoiced = this.modal.$("#id_to_be_invoiced").is(':checked');
@@ -322,7 +322,7 @@ var Flod = window.Flod || {};
             this.modal.render();
             var email = this.model.get("emails")["denied_message"];
             this.modal.$(".modal-body").html(this.messageView.render(
-                "Oppgi en begrunnelse for avslag:", email).$el);
+                "Oppgi en begrunnelse for avslag:", this.model.get("type") , email).$el);
 
             this.modal.on("submit", _.bind(function () {
                 this.model.save(
@@ -603,9 +603,28 @@ var Flod = window.Flod || {};
         }
     });
 
+    var StrotimeApplicationView = ApplicationView.extend({
+        createCalendarView: function () {
+            var data = {
+                resource: new Backbone.Model(this.model.get('resource')),
+                date: moment(this.model.get('slots')[0].start_time),
+                facilitation_type_mappings: this.options.facilitation_type_mappings,
+                facilitation_group_mappings: this.options.facilitation_group_mappings
+            };
+
+            this.calendarView = new ns.SingleCalendarView({
+                data: data,
+                model: this.model
+            });
+        }
+    });
+
+
     var SingleApplication = ns.Application.extend({});
 
     var RepeatingApplication = ns.Application.extend({});
+
+    var StrotimeApplication = ns.Application.extend({});
 
     ns.createApplicationView = function (application_data, arrangement_conflicts_data, facilitation_type_mappings, facilitation_group_mappings, element) {
         var model;
@@ -623,6 +642,15 @@ var Flod = window.Flod || {};
         if (application_data.type === 'repeating') {
             model = new RepeatingApplication(application_data);
             return new RepeatingApplicationView({
+                "model": model,
+                "facilitation_type_mappings": facilitation_type_mappings,
+                "facilitation_group_mappings": facilitation_group_mappings,
+                "el": element
+            });
+        }
+        if (application_data.type === 'strotime') {
+            model = new StrotimeApplication(application_data);
+            return new StrotimeApplicationView({
                 "model": model,
                 "facilitation_type_mappings": facilitation_type_mappings,
                 "facilitation_group_mappings": facilitation_group_mappings,

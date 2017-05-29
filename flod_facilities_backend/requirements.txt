@@ -15,7 +15,7 @@ GeoAlchemy2==0.2.4
 httpretty==0.8.0
 itsdangerous==0.24
 Jinja2==2.7.2
-kombu==3.0.15
+kombu==3.0.37
 Mako==0.9.1
 MarkupSafe==0.21
 Pillow==2.4.0
@@ -25,7 +25,7 @@ pycrypto==2.6.1
 pytz==2014.2
 requests==2.2.1
 Shapely==1.2.17
-six==1.6.1
+six==1.10.0
 SQLAlchemy==0.9.4
 urllib3==1.8.2
 Werkzeug==0.9.4

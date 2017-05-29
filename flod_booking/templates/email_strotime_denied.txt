@@ -1,0 +1,6 @@
+Trondheim kommune har avbestilt din booking av strøtime
+
+{% for slot in slots %}{{ slot }}{% endfor %} i {{ resource_name }},
+på grunn av aktivitet eller arrangement med høyere prioritet.
+
+Dersom du ønsker det, kan du be om mer informasjon ved å sende en e-post til booking@trondheim.kommune.no.

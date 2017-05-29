@@ -1,0 +1,6 @@
+Din søknad om lån av {{ resource_name }} er registrert.
+Søknaden blir behandlet av enheten som har ansvar for lokalet. Svar på søknaden blir sendt til den e-post-adressen som du har oppgitt.
+
+Du kan følge med på behandling av søknaden. Gå til https://booking.trondheim.kommune.no/, logg inn, og du vil se status på søknaden under "Mine søknader".
+
+Vi ønsker tilbakemelding på din opplevelse av Bookingbasen og håper du kan svare på noen få spørsmål: https://response.questback.com/trondheimkommune/exlnv3kdiu

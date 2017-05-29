@@ -127,7 +127,7 @@ var Flod = window.Flod || {};
         },
         url: function () {
             var url = "/api/booking/v1/resources/";
-            url += "?booking_type=repeating_booking_allowed";
+            url += "?booking_type=rammetid_allowed";
             if (this.umbrellaOrganisationUri) {
                 url += "&umbrella_organisation_uri=" + this.umbrellaOrganisationUri;
             }

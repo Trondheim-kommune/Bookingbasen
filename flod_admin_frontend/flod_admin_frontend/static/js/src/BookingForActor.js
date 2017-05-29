@@ -119,15 +119,8 @@ var Flod = window.Flod || {};
         render: function () {
 
             this.$el.html(_.template(this.template));
-            var type = this.type;
-            var elements = _.chain(this.collection.models)
-                .filter(function (model) {
-                    if (type === 'repeating') {
-                        return model.get('repeating_booking_allowed');
-                    } else if (type === 'single') {
-                        return model.get('single_booking_allowed');
-                    }
-                })
+            var filteredModels = this.filterModels(this.collection.models);
+            var elements = _.chain(filteredModels)
                 .map(function (model) {
                     return _.template(
                         '<option value="<%= id %>"><%= name %></option>',
@@ -140,6 +133,21 @@ var Flod = window.Flod || {};
             this.trigger('changeResource');
 
             return this;
+        },
+
+        filterModels: function(models){
+            var type = this.type;
+            if (type === 'repeating') {
+                return models.filter(function (model) {
+                    return model.get('repeating_booking_allowed');
+                })
+            } else if (type === 'single') {
+                return models.filter(function (model) {
+                    return model.get('single_booking_allowed');
+                })
+            } else if (type === 'arrangement') {
+                return models;
+            }
         },
 
         change: function (e) {
@@ -356,6 +364,7 @@ var Flod = window.Flod || {};
         },
 
         changeSingleBookingType: function (isArrangement) {
+            this.resourceSelect.setType(isArrangement? "arrangement" : "single");
             this.trigger('changeSingleBookingType', isArrangement);
         }
 

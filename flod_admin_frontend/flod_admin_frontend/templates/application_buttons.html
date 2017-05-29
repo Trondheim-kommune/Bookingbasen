@@ -12,7 +12,11 @@
     </div>
     <% } else { %>
     <span class="label large-label label-<% if (status.name === 'Godkjent') { print('success') } else { print('important') }%>"><%= status.name %></span>
-    <% if (status.name === 'Godkjent' || status.name === 'Avvist') { %>
+    <% if (status.name === 'Godkjent' && type === 'strotime') { %>
+    <div class="row-fluid margined">
+    <button id="deny" class="btn btn-large btn-danger">Avvis</button>
+    </div>
+    <% } else if ((status.name === 'Godkjent' || status.name === 'Avvist') && type !== 'strotime') { %>
     <div class="row-fluid margined">
         <button id="reprocess" class="btn">Behandle på ny</button>
     </div>

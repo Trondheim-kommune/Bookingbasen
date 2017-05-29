@@ -14,6 +14,7 @@ from api_exceptions import format_exception
 from BaseResource import (BaseResource, ISO8601DateTime,
                           get_organisation_from_web, get_person_from_web)
 from repo import get_user, has_role
+from WeeklyRammetidSlotsResource import WeeklyRammetidSlotsResource
 
 
 def get_start_and_end_date_from_week_and_year(year, week):
@@ -312,9 +313,14 @@ class SlotsForWeekResource(BaseResource):
                 ))
         return result
 
-    def get_strotime_slots(self, resource, year, week_number, day):
+    def get_strotime_slots(self, resource, except_applications, statuses, year, week_number, day):
 
-        objects = self.get_by_resource_and_status(StrotimeSlot, resource)
+        objects = self.get_by_resource_and_status(StrotimeSlot, resource, statuses)
+        objects = self.filter_by_applications_object(
+            StrotimeSlot,
+            objects,
+            except_applications
+        )
         objects = self.filter_single_by_time(StrotimeSlot, objects, year, week_number, day)
 
         result = []
@@ -338,6 +344,34 @@ class SlotsForWeekResource(BaseResource):
                                     person.get('first_name', ''))
             return (name, person.get('email_address'))
         return None
+
+    def split_by_arrangement_slots(self, slots, arrangements_slots, start_date):
+        time_intervals = [[] for i in range(1, 9)]
+
+        for arrangements_slot in arrangements_slots:
+            week_day = arrangements_slot.start_time.isoweekday()
+            start_time = arrangements_slot.start_time.time()
+            end_time = arrangements_slot.end_time.time()
+            time_intervals[week_day].append({
+                "start": start_time,
+                "end": end_time
+            })
+
+        for time_interval in time_intervals:
+            time_interval.sort(key=lambda item: (item['start'], item['end']))
+
+        results = []
+        for slot in slots:
+            time_interval_by_week_number = [item for item in time_intervals[slot['start_time'].isoweekday()]]
+
+            periods = self.split_range_by_intervals(slot['start_time'].time(), slot['end_time'].time(), time_interval_by_week_number)
+
+            for period in periods:
+                sl = slot
+                sl['start_time'] =  datetime.combine(slot['start_time'].date(), period['start'])
+                sl['end_time'] =  datetime.combine(slot['end_time'].date(), period['end'])
+                results.append(sl)
+        return results
 
     def get(self):
 
@@ -387,6 +421,8 @@ class SlotsForWeekResource(BaseResource):
 
         strotimer = self.get_strotime_slots(
             resource,
+            except_applications,
+            statuses,
             year,
             week_number,
             day
@@ -394,6 +430,12 @@ class SlotsForWeekResource(BaseResource):
 
         slots = single + repeating + strotimer
 
+        if "split_by_arrangement_slots" in request.args:
+            start_date, end_date = get_start_and_end_date_from_week_and_year(year, week_number)
+            arrangements_slots = WeeklyRammetidSlotsResource().get_arrangements_slots(resource, start_date, end_date)
+
+            if arrangements_slots:
+                slots = self.split_by_arrangement_slots(slots, arrangements_slots, start_date)
 
         user = get_user(request.cookies)
         if user is not None and has_role(user, 'flod_saksbehandlere'):

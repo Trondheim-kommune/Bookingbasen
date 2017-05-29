@@ -231,6 +231,10 @@ def logged_in_from_adfs():
         auth_user.roles = user_roles
         app.logger.info('User roles after update: %s', user_roles)
 
+        app.logger.info('Logged in: %s name=%s ident=%s email=%s',
+                        datetime.now().isoformat(),
+                        name, ident, email)
+
         login_user(auth_user, remember=True)
         # Check if the user wants to redirect to a specific page
         redirect_target = get_redirect_target_from_cookie(request)

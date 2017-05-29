@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from logging import StreamHandler
+from logging import StreamHandler, INFO
 
 from flask import Flask
 from flask.ext.bouncer import Bouncer
@@ -26,6 +26,7 @@ def create_app(db_url):
 
     if not app.debug:
         app.logger.addHandler(StreamHandler())
+        app.logger.setLevel(INFO)
 
     create_api(app, API_VERSION)
     create_bouncer(app)

@@ -29,6 +29,15 @@ def get_all_organisations(organisation_filter, auth_token_username):
     return r.json()
 
 
+def get_organisations(organisation_ids, organisation_filter, auth_token_username):
+    url = '{url}/api/v1/organisations/'.format(url=ORGANISATIONS_URL)
+    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+    r = requests.get(url, cookies=generate_cookies(auth_token_username),
+                     data=json.dumps({'organisation_ids': organisation_ids}),
+                     params=organisation_filter, headers=headers)
+    return r.json()
+
+
 def get_organisation(organisation_id, auth_token_username, params=None):
     url = '{url}/api/v1/organisations/{id}'.format(
         url=ORGANISATIONS_URL,
@@ -43,11 +52,12 @@ def get_all_persons(auth_token_username):
     r = requests.get(url, cookies=generate_cookies(auth_token_username))
     return r.json()
 
+
 def get_persons(person_id=None, person_ids=None, auth_token_username=None):
     url = '{url}/api/v1/persons/{person_id}'.format(url=ORGANISATIONS_URL, person_id=person_id if person_id is not None else "")
     params = None
     if person_ids:
-        params={
+        params = {
             'person_ids': person_ids
         }
 

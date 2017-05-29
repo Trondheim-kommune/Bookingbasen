@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from logging import StreamHandler
+from logging import StreamHandler, INFO
 
 from flask import Flask
 from flask.ext.mail import Message, Mail
@@ -46,6 +46,7 @@ def create_app(db_url):
     if not app.debug:
         stream_handler = StreamHandler()
         app.logger.addHandler(stream_handler)
+        app.logger.setLevel(INFO)
 
     check_environment(app)
 

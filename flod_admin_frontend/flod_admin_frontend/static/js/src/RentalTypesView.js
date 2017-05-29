@@ -6,7 +6,8 @@ var Flod = window.Flod || {};
     ns.RentalTypesView = Backbone.View.extend({
         types: [ "auto_approval_allowed",
                  "single_booking_allowed",
-                 "repeating_booking_allowed" ],
+                 "repeating_booking_allowed",
+                 "rammetid_allowed"],
 
         events: {
             "click #save_button": "saveResource"

@@ -35,9 +35,7 @@
             <div id="container">
                 <div id="repeating-application">
                 </div>
-                <div id="repeating-date-range-changer">
-                </div>
-                <div id="repeating-time-period-changer">
+                <div id="repeating-date-range-time-period-changer">
                 </div>
             </div>
         </div>
@@ -88,39 +86,28 @@
         </dl>
     </script>
 
-    <script type="text/template" id="release_date_range_repeating_slot_template">
+    <script type="text/template" id="release_date_range_time_period_repeating_slot_template">
         <div>
             <br/>
-            Frigi en bestemt dag eller periode innenfor <%= start_date %> og <%= end_date %> (hvis du frigir i midten vil den bli delt opp i to).
+            Frigi en bestemt <b>dag/periode</b> innenfor <b><%= start_date %> og <%= end_date %></b> <i>og</i>
+            en bestemt <b>time/tidspunkt</b> innenfor <b><%= start_time %> og <%= end_time %></b>
+            (hvis du frigir i midten av periode/tidspunkt vil den bli delt opp).
             <br/>
             <br/>
 
             <div id="date-selection"></div>
-            <a class="btn" id="release-date-range">Frigi</a>
-        </div>
-    </script>
-
-    <script type="text/template" id="release_time_period_repeating_slot_template">
-        <div>
-            <br/>
-            Frigi en bestemt time eller tidspunkt innenfor <%= start_time %> og <%= end_time %> (hvis du frigir i midten vil den bli delt opp i to).
-            <br/>
-            <br/>
-
             <div id="time-picker"></div>
-            <a class="btn" id="release-time-period">Frigi</a>
+            <a class="btn" id="release-date-range-time-period">Frigi</a>
         </div>
     </script>
 
     <script type="text/template" id="repeating_slot_template">
         <li>
             <%= day %>
-            <a class="btn" id="release-date-range"><%= start_date %> - <%= end_date %></a>
-            <a class="btn" id="release-time-period"><%= start_time %> - <%= end_time %></a>
+            <a class="btn" id="release-date-range-time-period"><%= start_date %> - <%= end_date %> (<%= start_time %> - <%= end_time %>)</a>
         </li>
     </script>
 
     {% include "alert.html" %}
     {% include "time-picker.html" %}
-
 {% endblock %}

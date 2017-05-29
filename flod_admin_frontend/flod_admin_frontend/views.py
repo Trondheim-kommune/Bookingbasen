@@ -1,23 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import json
 import ConfigParser
 import copy
-
+import json
 import os
+
+import requests
+from adfs.saml import AuthRequest, Response as IdpResponse
+import calendar
+from datetime import date
+from datetime import datetime
 from flask import (render_template, request, abort, redirect,
                    make_response, Response, flash)
-import requests
 from flask.ext.login import login_user, logout_user, login_required, current_user
-from adfs.saml import AuthRequest, Response as IdpResponse
-import adfs_helper
-import authentication
 from flod_admin_frontend import app
 from flod_common.session.utils import make_auth_token
-import repo
+
+import adfs_helper
+import authentication
 import proxy
-from datetime import datetime
+import repo
 
 APP_NAME = "Bookingbasen Admin"
 
@@ -234,6 +237,17 @@ def map_applications_to_organisations(applications, organisations):
             application["organisation"] = organisation
 
 
+def get_organisations_for_applications(applications, params):
+    # get all unique organisations for all applications
+    ext_org_ids = list(set([int(application["organisation"]["uri"].replace('/organisations/', '')) for application in applications if "uri" in application["organisation"] and application["organisation"]["uri"]]))
+    organisations = repo.get_organisations(
+        ext_org_ids,
+        params,
+        auth_token_username=current_user.user_id
+    )
+    return organisations
+
+
 def map_applications_to_persons(applications, persons):
     for application in applications:
         person = next(person for person in persons if application["person"]["uri"] == person["uri"])
@@ -316,14 +330,33 @@ def applications():
     if status not in ('Pending', 'Granted', 'Approved', 'Processing',
                       'Denied'):
         status = 'Pending'
+    app_params = {'status': status}
+
+    if status in ('Granted', 'Denied'):
+        today = date.today()
+        start_date = request.args.get('start_date')
+        if start_date:
+            start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+        else:
+            year_ = today.year if today.month > 1 else today.year - 1
+            month_ = (today.month - 1) if today.month > 1 else 12
+            days_in_month = calendar.monthrange(year_, month_)[1]
+            day_ = today.day if today.day <= days_in_month else days_in_month
+            start_date = date(year_, month_, day_)
+
+        end_date = request.args.get('end_date')
+        if end_date:
+            end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
+        else:
+            end_date = today
+        app_params["start_date"] = start_date.isoformat()
+        app_params["end_date"] = end_date.isoformat()
+
     try:
         applications = repo.get_all_applications(
             auth_token_username=current_user.user_id,
-            params={'status': status}
+            params=app_params
         )
-
-        applications = [application for application
-                        in applications if application["type"] != "strotime"]
 
         # Show deleted facilities
         params = dict(show_deleted=True, show_not_published=True)
@@ -331,11 +364,11 @@ def applications():
             auth_token_username=current_user.user_id,
             params=params
         )
+
+        # Show deleted organisations
         params = dict(show_deleted=True)
-        organisations = repo.get_all_organisations(
-            params,
-            auth_token_username=current_user.user_id
-        )
+        organisations = get_organisations_for_applications(applications, params)
+
         map_applications_to_facilities(applications, facilities)
         map_applications_to_organisations(applications, organisations)
         get_and_map_persons_to_applications(applications)
@@ -343,11 +376,10 @@ def applications():
     except Exception as e:
         app.logger.error('Proxy request failed: %s', e)
         abort(404)
-
     return render_flod_template(
         'applications.html',
         applications=json.dumps(applications),
-        status=status
+        **app_params
     )
 
 
@@ -728,7 +760,7 @@ def rammetid_assign_time():
             auth_token_username=current_user.user_id
         )
         params = {
-            "booking_type": "repeating_booking_allowed"
+            "booking_type": "rammetid_allowed"
         }
         resources = repo.get_resources(
             auth_token_username=current_user.user_id,
@@ -785,15 +817,12 @@ def get_facilities_with_booking_type():
                             facility['id'])
             continue
 
-        add = False
         if resource['repeating_booking_allowed']:
             facility['repeating_booking_allowed'] = True
-            add = True
         if resource['single_booking_allowed']:
             facility['single_booking_allowed'] = True
-            add = True
-        if add:
-            res.append(facility)
+
+        res.append(facility)
     return res
 
 
