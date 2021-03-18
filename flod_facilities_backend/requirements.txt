@@ -18,7 +18,7 @@ Jinja2==2.7.2
 kombu==3.0.37
 Mako==0.9.1
 MarkupSafe==0.21
-Pillow==2.4.0
+Pillow==8.1.1
 pip-tools==0.3.4
 psycopg2==2.5.2
 pycrypto==2.6.1
