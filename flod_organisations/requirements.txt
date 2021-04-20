@@ -18,7 +18,7 @@ responses==0.2.0
 six==1.10.0
 SQLAlchemy==0.9.4
 suds==0.4
-Werkzeug==0.9.4
+Werkzeug==0.15.3
 xlrd==0.9.3
 validate-email==1.2
 Sphinx==1.2.3
