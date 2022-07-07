@@ -11,6 +11,6 @@ jsmin==2.0.9
 lxml==3.3.5
 MarkupSafe==0.21
 pip-tools==0.3.4
-requests==2.2.1
+requests==2.20.0
 webassets==0.9
 Werkzeug==0.9.4
