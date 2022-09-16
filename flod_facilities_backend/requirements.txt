@@ -16,7 +16,7 @@ httpretty==0.8.0
 itsdangerous==0.24
 Jinja2==2.7.2
 kombu==3.0.37
-Mako==0.9.1
+Mako==1.2.2
 MarkupSafe==0.21
 Pillow==2.4.0
 pip-tools==0.3.4
